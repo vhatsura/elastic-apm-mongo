@@ -1,0 +1,6 @@
+branches:
+  master:
+    tag: beta
+ignore:
+  sha: []
+merge-message-formats: {}
