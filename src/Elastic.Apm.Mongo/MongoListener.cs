@@ -28,48 +28,71 @@ namespace Elastic.Apm.Mongo
 
         public void Handle(CommandStartedEvent @event)
         {
-            var transaction = _apmAgent.Tracer.CurrentTransaction;
-            if (transaction == null)
+            try
             {
-                return;
+                var transaction = _apmAgent.Tracer.CurrentTransaction;
+                if (transaction == null)
+                {
+                    return;
+                }
+
+                var currentExecutionSegment = _apmAgent.Tracer.CurrentSpan ?? (IExecutionSegment) transaction;
+                var span = currentExecutionSegment.StartSpan(
+                    @event.CommandName,
+                    ApiConstants.TypeDb,
+                    "mongo");
+
+                _processingQueries.TryAdd(@event.RequestId, span);
+
+                span.Action = ApiConstants.ActionQuery;
+
+                span.Context.Db = new Database
+                {
+                    Statement = @event.Command.ToString(),
+                    Instance = @event.ConnectionId.ServerId.EndPoint.ToString(),
+                    Type = "mongo"
+                };
             }
-
-            var currentExecutionSegment = _apmAgent.Tracer.CurrentSpan ?? (IExecutionSegment) transaction;
-            var span = currentExecutionSegment.StartSpan(
-                @event.CommandName,
-                ApiConstants.TypeDb,
-                "mongo");
-
-            _processingQueries.TryAdd(@event.RequestId, span);
-            
-            span.Action = ApiConstants.ActionQuery;
-
-            span.Context.Db = new Database
+            catch (Exception ex)
             {
-                Statement = @event.Command.ToString(),
-                Instance = @event.ConnectionId.ServerId.EndPoint.ToString(),
-                Type = "mongo"
-            };
+                //ignore
+            }
         }
 
         public void Handle(CommandSucceededEvent @event)
         {
-            if (_processingQueries.TryRemove(@event.RequestId, out var span))
+            try
             {
-                span.Duration = @event.Duration.TotalMilliseconds;
-            }
+                if (_processingQueries.TryRemove(@event.RequestId, out var span))
+                {
+                    span.Duration = @event.Duration.TotalMilliseconds;
+                }
 
-            span.End();
+                span.End();
+            }
+            catch (Exception ex)
+            {
+                // ignore
+            }
+           
         }
 
         public void Handle(CommandFailedEvent @event)
         {
-            if (_processingQueries.TryRemove(@event.RequestId, out var span))
+            try
             {
-                span.Duration = @event.Duration.TotalMilliseconds;
-            }
+                if (_processingQueries.TryRemove(@event.RequestId, out var span))
+                {
+                    span.Duration = @event.Duration.TotalMilliseconds;
+                }
 
-            span.CaptureException(@event.Failure);
+                span.CaptureException(@event.Failure);
+            }
+            catch (Exception ex)
+            {
+                // ignore
+            }
+            
         }
 
         public void Dispose()
