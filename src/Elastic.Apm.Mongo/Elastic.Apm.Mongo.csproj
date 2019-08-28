@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFrameworks>net461;netstandard2.0</TargetFrameworks>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <Authors>Vadim Hatsura</Authors>
+    <Description>Elastic APM for MongoDb. This package contains auto instrumentation for MongoDb.</Description>
+    <PackageTags>apm, monitoring, elastic, elasticapm, analytics, mongo, mongodb</PackageTags>
+    <Copyright>Copyright (c) 2019 - Present</Copyright>
+    <PackageProjectUrl>https://github.com/vhatsura/elastic-apm-mongo</PackageProjectUrl>
+    <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+    <RepositoryUrl>https://github.com/vhatsura/elastic-apm-mongo.git</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <Company/>
+    <Product/>
   </PropertyGroup>
 
   <ItemGroup>
