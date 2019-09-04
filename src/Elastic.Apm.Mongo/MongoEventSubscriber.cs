@@ -4,11 +4,13 @@ using MongoDB.Driver.Core.Events;
 namespace Elastic.Apm.Mongo
 {
     /// <inheritdoc cref="IEventSubscriber" />
+    // ReSharper disable once UnusedMember.Global
     public class MongoEventSubscriber : IEventSubscriber
     {
         private readonly ReflectionEventSubscriber _subscriber;
 
         /// <summary>
+        ///     Creates instance of <see cref="MongoEventSubscriber" /> class.
         /// </summary>
         public MongoEventSubscriber() => _subscriber = new ReflectionEventSubscriber(new MongoListener());
 

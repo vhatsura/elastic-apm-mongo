@@ -48,10 +48,12 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
 
         public void OnError(Exception error)
         {
+            // do nothing because it's not necessary to handle such event from provider
         }
 
         public void OnCompleted()
         {
+            // do nothing because it's not necessary to handle such event from provider
         }
 
         private void HandleCommandStartEvent(CommandStartedEvent @event)

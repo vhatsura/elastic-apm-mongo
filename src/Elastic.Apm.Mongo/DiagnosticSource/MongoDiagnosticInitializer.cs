@@ -15,10 +15,12 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
 
         public void OnCompleted()
         {
+            // do nothing because it's not necessary to handle such event from provider
         }
 
         public void OnError(Exception error)
         {
+            // do nothing because it's not necessary to handle such event from provider
         }
 
         public void OnNext(DiagnosticListener value)

@@ -3,17 +3,18 @@ using System.Diagnostics;
 using Elastic.Apm.DiagnosticSource;
 using Elastic.Apm.Mongo.DiagnosticSource;
 
+// ReSharper disable UnusedMember.Global
+
 namespace Elastic.Apm.Mongo
 {
     /// <summary>
+    ///     A subscriber to events from mongoDB driver diagnostic source.
     /// </summary>
     public class MongoDiagnosticsSubscriber : IDiagnosticsSubscriber
     {
         /// <summary>
-        ///     Starts listening for MongoDB Driver diagnostic source events
+        ///     Starts listening for mongoDB driver diagnostic source events
         /// </summary>
-        /// <param name="components"></param>
-        /// <returns></returns>
         public IDisposable Subscribe(IApmAgent components)
         {
             var retVal = new CompositeDisposable();
