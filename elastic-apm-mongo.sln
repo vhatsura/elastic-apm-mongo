@@ -5,6 +5,22 @@ VisualStudioVersion = 16.0.29209.152
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastic.Apm.Mongo", "src\Elastic.Apm.Mongo\Elastic.Apm.Mongo.csproj", "{F4501B59-4F2E-4436-9407-71943A3A7ABC}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastic.Apm.Mongo.Tests", "tests\Elastic.Apm.Mongo.Tests\Elastic.Apm.Mongo.Tests.csproj", "{D6CD7340-ECF2-4F15-80F1-4016DB1AC747}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{E5AE4FE2-7D60-4932-AC18-E6BC830DDC05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastic.Apm.Mongo.IntegrationTests", "tests\Elastic.Apm.Mongo.IntegrationTests\Elastic.Apm.Mongo.IntegrationTests.csproj", "{891959DB-7BB7-449C-B55E-15782B838384}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{C17F68B2-A613-4E5B-B448-BA0E9F2A631C}"
+ProjectSection(SolutionItems) = preProject
+	.editorconfig = .editorconfig
+	.gitignore = .gitignore
+	azure-pipelines.yml = azure-pipelines.yml
+	GitVersion.yml = GitVersion.yml
+	LICENSE = LICENSE
+	README.md = README.md
+EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,11 +31,23 @@ Global
 		{F4501B59-4F2E-4436-9407-71943A3A7ABC}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F4501B59-4F2E-4436-9407-71943A3A7ABC}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F4501B59-4F2E-4436-9407-71943A3A7ABC}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D6CD7340-ECF2-4F15-80F1-4016DB1AC747}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D6CD7340-ECF2-4F15-80F1-4016DB1AC747}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D6CD7340-ECF2-4F15-80F1-4016DB1AC747}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D6CD7340-ECF2-4F15-80F1-4016DB1AC747}.Release|Any CPU.Build.0 = Release|Any CPU
+		{891959DB-7BB7-449C-B55E-15782B838384}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{891959DB-7BB7-449C-B55E-15782B838384}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{891959DB-7BB7-449C-B55E-15782B838384}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{891959DB-7BB7-449C-B55E-15782B838384}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {0BB799C5-DE85-4357-BDC5-398E5F35BB34}
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{D6CD7340-ECF2-4F15-80F1-4016DB1AC747} = {E5AE4FE2-7D60-4932-AC18-E6BC830DDC05}
+		{891959DB-7BB7-449C-B55E-15782B838384} = {E5AE4FE2-7D60-4932-AC18-E6BC830DDC05}
 	EndGlobalSection
 EndGlobal
