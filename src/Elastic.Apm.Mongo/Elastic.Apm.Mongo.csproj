@@ -11,8 +11,9 @@
     <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
     <RepositoryUrl>https://github.com/vhatsura/elastic-apm-mongo.git</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <Company/>
-    <Product/>
+    <Company />
+    <Product />
+    <LangVersion>8</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
