@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Elastic.Apm.Mongo
 {
-    internal class CompositeDisposable : IDisposable
+    internal sealed class CompositeDisposable : IDisposable
     {
         private readonly List<IDisposable> _disposables = new List<IDisposable>();
         private readonly object _lock = new object();

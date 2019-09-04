@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace Elastic.Apm.Mongo.DiagnosticSource
 {
-    internal class MongoDiagnosticInitializer : IObserver<DiagnosticListener>, IDisposable
+    internal sealed class MongoDiagnosticInitializer : IObserver<DiagnosticListener>, IDisposable
     {
         private readonly IApmAgent _apmAgent;
 
