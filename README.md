@@ -10,10 +10,8 @@ An auto instrumentation of [MongoDB](https://github.com/mongodb/mongo-csharp-dri
 
 ## Installation
 
-Install prerelease version from MyGet:
-
 ```powershell
-Install-Package Elastic.Apm.Mongo -Source https://www.myget.org/F/elastic-apm-mongo/api/v3/index.json
+Install-Package Elastic.Apm.Mongo
 ```
 
 ## Usage
