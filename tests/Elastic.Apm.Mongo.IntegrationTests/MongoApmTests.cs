@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Reflection;
 using System.Threading.Tasks;
 using Elastic.Apm.Api;
 using Elastic.Apm.Mongo.IntegrationTests.Fixture;
@@ -23,7 +24,8 @@ namespace Elastic.Apm.Mongo.IntegrationTests
                     payloadSender: _payloadSender);
 
             var apmAgentType = typeof(IApmAgent).Assembly.GetType("Elastic.Apm.ApmAgent");
-            _agent = (IApmAgent) apmAgentType.GetConstructors().First().Invoke(new object[] {config});
+            _agent = (IApmAgent) apmAgentType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First()
+                .Invoke(new object[] {config});
             _agent.Subscribe(new MongoDiagnosticsSubscriber());
         }
 
