@@ -77,6 +77,9 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
                     Instance = @event.DatabaseNamespace.DatabaseName,
                     Type = "mongo"
                 };
+
+                // todo: fill it
+                // span.Context.Destination
             }
             catch (Exception ex)
             {
