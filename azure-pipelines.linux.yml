@@ -1,0 +1,87 @@
+jobs:
+  - ${{ each mongoDriverVersion in parameters.mongoDriverVersions }}:
+      - job:
+        displayName: ${{ format('MongoDB Driver Version:{0}', mongoDriverVersion) }}
+        variables:
+          # workaround due to https://github.com/GitTools/GitVersion/pull/2221
+          MSBUILDSINGLELOADCONTEXT: 1
+        pool:
+          vmImage: ubuntu-latest
+        container: mcr.microsoft.com/dotnet/core/sdk:3.1
+        steps:
+          - task: UseDotNet@2
+            displayName: Install .Net Core 2.2.x SDK
+            inputs:
+              packageType: sdk
+              version: '2.2.x'
+
+          # by installing .net core 2.2 we override global path to dotnet executable
+          # In such case host machine decides that only .Net Core 2.2 is installed 
+          - task: UseDotNet@2
+            displayName: Install .Net Core 3.1.x SDK
+            inputs:
+              packageType: sdk
+              version: '3.1.x'
+
+          - script: sed -i -E "s/(<PackageReference Include=\"MongoDB.Driver\" Version=\").*(\" \/>)/\1${{ mongoDriverVersion }}\2/" ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj
+          - script: cat ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj
+
+          - task: SonarCloudPrepare@1
+            displayName: Prepare SonarCloud
+            inputs:
+              SonarCloud: 'SonarCloud vhatsura'
+              organization: 'vhatsura'
+              scannerMode: 'MSBuild'
+              projectKey: 'elastic-apm-mongo'
+              projectName: 'elastic-apm-mongo'
+              extraProperties: |
+                # Additional properties that will be passed to the scanner, 
+                # Put one key=value per line, example:
+                # sonar.exclusions=**/*.bin
+                sonar.cs.opencover.reportsPaths="**\coverage.opencover.xml"
+
+          - task: DotNetCoreCLI@2
+            displayName: Build
+            inputs:
+              command: build
+              # disable parallel restore due to https://github.com/GitTools/GitVersion/issues/1381
+              arguments: '--disable-parallel --configuration $(buildConfiguration)'
+
+          - task: DotNetCoreCLI@2
+            displayName: Test
+            inputs:
+              command: test
+              arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+              nobuild: true
+
+          - task: SonarCloudAnalyze@1
+            displayName: Run Sonar Scanner
+
+          - task: SonarCloudPublish@1
+            displayName: Publish analyze artifacts to Sonar Cloud
+            inputs:
+              pollingTimeoutSec: '300'
+
+          # todo: make it as a separate job
+          - task: DotNetCoreCLI@2
+            displayName: Pack
+            inputs:
+              command: pack
+              arguments: '--configuration $(buildConfiguration) --include-symbols'
+              nobuild: true
+
+          - task: PublishBuildArtifacts@1
+            displayName: Publish build artifacts to Azure Pipelines
+            inputs:
+              artifactName: 'packages'
+
+          # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
+          # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160
+          - task: NuGetCommand@2
+            displayName: Publish NuGet package to MyGet
+            inputs:
+              command: 'push'
+              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.snupkg'
+              nuGetFeedType: 'external'
+              publishFeedCredentials: 'Elastic Apm Mongo MyGet'
+            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
