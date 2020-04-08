@@ -74,27 +74,30 @@ stages:
           displayName: Publish analyze artifacts to Sonar Cloud
           inputs:
             pollingTimeoutSec: '300'
+            
+- stage: Artifacts
+  jobs:
+    - job:
+      steps:
+        - task: DotNetCoreCLI@2
+          displayName: Pack
+          inputs:
+            command: pack
+            arguments: '--configuration $(buildConfiguration) --include-symbols'
+            nobuild: true
 
-               #          # todo: make it as a separate job
-               #          - task: DotNetCoreCLI@2
-               #            displayName: Pack
-               #            inputs:
-               #              command: pack
-               #              arguments: '--configuration $(buildConfiguration) --include-symbols'
-               #              nobuild: true
-               #
-               #          - task: PublishBuildArtifacts@1
-               #            displayName: Publish build artifacts to Azure Pipelines
-               #            inputs:
-               #              artifactName: 'packages'
-               #
-               #          # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
-               #          # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160
-               #          - task: NuGetCommand@2
-               #            displayName: Publish NuGet package to MyGet
-               #            inputs:
-               #              command: 'push'
-               #              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.snupkg'
-               #              nuGetFeedType: 'external'
-               #              publishFeedCredentials: 'Elastic Apm Mongo MyGet'
-               #            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        - task: PublishBuildArtifacts@1
+          displayName: Publish build artifacts to Azure Pipelines
+          inputs:
+            artifactName: 'packages'
+    #
+    #          # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
+    #          # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160
+    #          - task: NuGetCommand@2
+    #            displayName: Publish NuGet package to MyGet
+    #            inputs:
+    #              command: 'push'
+    #              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.snupkg'
+    #              nuGetFeedType: 'external'
+  #              publishFeedCredentials: 'Elastic Apm Mongo MyGet'
+  #            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
