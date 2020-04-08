@@ -76,6 +76,7 @@ stages:
             pollingTimeoutSec: '300'
             
 - stage: Artifacts
+  dependsOn: [ 'IntegrationTests', 'CodeAnalysis' ]
   jobs:
     - job:
       steps:
@@ -84,7 +85,6 @@ stages:
           inputs:
             command: pack
             arguments: '--configuration $(buildConfiguration) --include-symbols'
-            nobuild: true
 
         - task: PublishBuildArtifacts@1
           displayName: Publish build artifacts to Azure Pipelines
