@@ -27,11 +27,17 @@ jobs:
           - script: cat ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj
 
           - task: DotNetCoreCLI@2
+            displayName: Restore
+            inputs:
+              command: restore
+              # disable parallel restore due to https://github.com/GitTools/GitVersion/issues/1381
+              arguments: '--disable-parallel --configuration $(buildConfiguration)'
+
+          - task: DotNetCoreCLI@2
             displayName: Build
             inputs:
               command: build
-              # disable parallel restore due to https://github.com/GitTools/GitVersion/issues/1381
-              arguments: '--disable-parallel --configuration $(buildConfiguration)'
+              arguments: '--no-restore --configuration $(buildConfiguration)'
 
           - task: DotNetCoreCLI@2
             displayName: Test
