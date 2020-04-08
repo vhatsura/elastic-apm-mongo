@@ -1,80 +1,107 @@
 trigger:
-- master
-
-pool:
-  vmImage: 'windows-latest'
+  - master
 
 variables:
   buildConfiguration: 'Release'
 
-steps:
-- task: UseDotNet@2
-  displayName: Install .Net Core 2.2.x SDK
-  inputs:
-    packageType: sdk
-    version: '2.2.x'
+stages:
+- stage: IntegrationTests
+  displayName: Integration Tests
+  jobs:
+    - template: azure-pipelines.linux.yml
+      parameters:
+        mongoDriverVersions: [ '2.3.0', '2.4.4', '2.5.1', '2.6.1', '2.7.3', '2.8.1', '2.9.3', '2.10.3' ]
+    #- template: azure-pipelines.windows.yml
+    #  parameters:
+    #    mongoDriverVersions: [ '2.3.0', '2.4.4', '2.5.1', '2.6.1', '2.7.3', '2.8.1', '2.9.3', '2.10.3' ]
+    
+- stage: CodeAnalysis
+  displayName: Code Analysis
+  dependsOn: [] # by specifying an empty array, this stage doesn't depend on the stage before it
+  jobs:
+    - job:
+      displayName: SonarCloud
+      variables:
+        # workaround due to https://github.com/GitTools/GitVersion/pull/2221
+        MSBUILDSINGLELOADCONTEXT: 1
+      pool:
+        vmImage: ubuntu-latest
+      steps:
+        - task: UseDotNet@2
+          displayName: Install .Net Core 2.2.x SDK
+          inputs:
+            packageType: sdk
+            version: '2.2.x'
 
-- task: UseDotNet@2
-  displayName: Install .Net Core 3.0.x-preview SDK
-  inputs:
-    packageType: sdk
-    includePreviewVersions: true
-    version: '3.0.x'
+        - task: UseDotNet@2
+          displayName: Install .Net Core 3.1.x SDK
+          inputs:
+            packageType: sdk
+            version: '3.1.x'
+                           
+        - task: SonarCloudPrepare@1
+          displayName: Prepare SonarCloud
+          inputs:
+           SonarCloud: 'SonarCloud vhatsura'
+           organization: 'vhatsura'
+           scannerMode: 'MSBuild'
+           projectKey: 'elastic-apm-mongo'
+           projectName: 'elastic-apm-mongo'
+           extraProperties: |
+             # Additional properties that will be passed to the scanner, 
+             # Put one key=value per line, example:
+             # sonar.exclusions=**/*.bin
+             sonar.cs.opencover.reportsPaths="**\coverage.opencover.xml"
 
-- task: SonarCloudPrepare@1
-  displayName: Prepare SonarCloud
-  inputs:
-    SonarCloud: 'SonarCloud vhatsura'
-    organization: 'vhatsura'
-    scannerMode: 'MSBuild'
-    projectKey: 'elastic-apm-mongo'
-    projectName: 'elastic-apm-mongo'
-    extraProperties: |
-      # Additional properties that will be passed to the scanner, 
-      # Put one key=value per line, example:
-      # sonar.exclusions=**/*.bin
-      sonar.cs.opencover.reportsPaths="**\coverage.opencover.xml"
-      
-- task: DotNetCoreCLI@2
-  displayName: Build
-  inputs:
-    command: build
-    arguments: '--configuration $(buildConfiguration)'
+        - task: DotNetCoreCLI@2
+          displayName: Build
+          inputs:
+            command: build
+            # disable parallel restore due to https://github.com/GitTools/GitVersion/issues/1381
+            arguments: '--disable-parallel --configuration $(buildConfiguration)'
 
-- task: DotNetCoreCLI@2
-  displayName: Test
-  inputs:
-    command: test
-    arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
-    nobuild: true
+        - task: DotNetCoreCLI@2
+          displayName: Test
+          inputs:
+            command: test
+            arguments: '--no-restore --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+            nobuild: true
 
-- task: SonarCloudAnalyze@1
-  displayName: Run Sonar Scanner
+        - task: SonarCloudAnalyze@1
+          displayName: Run Sonar Scanner
+          
+        - task: SonarCloudPublish@1
+          displayName: Publish analyze artifacts to Sonar Cloud
+          inputs:
+            pollingTimeoutSec: '300'
+            
+- stage: Artifacts
+  dependsOn: [ 'IntegrationTests', 'CodeAnalysis' ]
+  jobs:
+    - job:
+      displayName: Pack and Publish Artifacts  
+      variables:
+        # workaround due to https://github.com/GitTools/GitVersion/pull/2221
+        MSBUILDSINGLELOADCONTEXT: 1
+      steps:
+        - task: DotNetCoreCLI@2
+          displayName: Pack
+          inputs:
+            command: pack
+            arguments: '--configuration $(buildConfiguration) --include-symbols'
 
-- task: SonarCloudPublish@1
-  displayName: Publish analyze artifacts to Sonar Cloud
-  inputs:
-    pollingTimeoutSec: '300'
-
-- task: DotNetCoreCLI@2
-  displayName: Pack
-  inputs:
-    command: pack
-    arguments: '--configuration $(buildConfiguration) --include-symbols'
-    nobuild: true
-
-- task: PublishBuildArtifacts@1
-  displayName: Publish build artifacts to Azure Pipelines
-  inputs:
-    artifactName: 'packages'
-
-# DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
-# https://github.com/Microsoft/azure-pipelines-tasks/issues/7160
-- task: NuGetCommand@2
-  displayName: Publish NuGet package to MyGet
-  inputs:
-    command: 'push'
-    packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.snupkg'
-    nuGetFeedType: 'external'
-    publishFeedCredentials: 'Elastic Apm Mongo MyGet'
-  condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+        - task: PublishBuildArtifacts@1
+          displayName: Publish build artifacts to Azure Pipelines
+          inputs:
+            artifactName: 'packages'
+    #
+    #          # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
+    #          # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160
+    #          - task: NuGetCommand@2
+    #            displayName: Publish NuGet package to MyGet
+    #            inputs:
+    #              command: 'push'
+    #              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.snupkg'
+    #              nuGetFeedType: 'external'
+  #              publishFeedCredentials: 'Elastic Apm Mongo MyGet'
+  #            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))

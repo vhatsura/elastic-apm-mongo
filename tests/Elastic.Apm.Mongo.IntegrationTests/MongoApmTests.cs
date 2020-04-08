@@ -39,7 +39,7 @@ namespace Elastic.Apm.Mongo.IntegrationTests
         {
             public MongoClient GetMongoClient(string connectionString)
             {
-                var mongoClientSettings = MongoClientSettings.FromConnectionString(connectionString);
+                var mongoClientSettings = MongoClientSettings.FromUrl(new MongoUrl(connectionString));
                 mongoClientSettings.ClusterConfigurator = builder => builder.Subscribe(new MongoEventSubscriber());
 
                 return new MongoClient(mongoClientSettings);
@@ -60,7 +60,7 @@ namespace Elastic.Apm.Mongo.IntegrationTests
         private readonly MockPayloadSender _payloadSender;
 
         [Fact]
-        public async Task ApmAgent_ShouldCorrectly()
+        public async Task ApmAgent_ShouldCorrectlyCaptureSpan()
         {
             // Arrange
             var transaction = _agent.Tracer.StartTransaction("elastic-apm-mongo", ApiConstants.TypeDb);
@@ -96,7 +96,10 @@ namespace Elastic.Apm.Mongo.IntegrationTests
             // Act
             try
             {
-                await _documents.Database.RunCommandAsync(new JsonCommand<BsonDocument>("{}"));
+                // run failPoint command on non-admin database which is forbidden
+                await _documents.Database.RunCommandAsync(new JsonCommand<BsonDocument>(
+                    "{configureFailPoint: \"failCommand\", mode: \"alwaysOn\",data: {errorCode: 2, failCommands: [\"find\"]}}"));
+                //await _documents.Database.RunCommandAsync(new JsonCommand<BsonDocument>("{}"));
             }
             catch
             {

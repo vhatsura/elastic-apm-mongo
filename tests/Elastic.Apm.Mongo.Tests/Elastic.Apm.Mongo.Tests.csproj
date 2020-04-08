@@ -1,24 +1,23 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
-    <PropertyGroup>
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <TargetFrameworks Condition=" '$(OS)' == 'WIN_NT' ">net461;netcoreapp3.1</TargetFrameworks>
+    <TargetFramework Condition=" '$(OS)' != 'WIN_NT' ">netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
 
-        <IsPackable>false</IsPackable>
+  <ItemGroup>
+    <PackageReference Include="AutoFixture.Xunit2" Version="4.11.0" />
+    <PackageReference Include="coverlet.msbuild" Version="2.8.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
+    <PackageReference Include="Moq" Version="4.13.1" />
+    <PackageReference Include="xunit" Version="2.4.1" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
+    <PackageReference Include="coverlet.collector" Version="1.2.0" />
+  </ItemGroup>
 
-        <TargetFrameworks>net461;netcoreapp3.0</TargetFrameworks>
-    </PropertyGroup>
-
-    <ItemGroup>
-        <PackageReference Include="AutoFixture.Xunit2" Version="4.11.0" />
-        <PackageReference Include="coverlet.msbuild" Version="2.8.0" />
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
-        <PackageReference Include="Moq" Version="4.13.1" />
-        <PackageReference Include="xunit" Version="2.4.1" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.1" />
-        <PackageReference Include="coverlet.collector" Version="1.2.0" />
-    </ItemGroup>
-
-    <ItemGroup>
-      <ProjectReference Include="..\..\src\Elastic.Apm.Mongo\Elastic.Apm.Mongo.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Elastic.Apm.Mongo\Elastic.Apm.Mongo.csproj" />
+  </ItemGroup>
 
 </Project>

@@ -15,8 +15,7 @@ namespace Elastic.Apm.Mongo.IntegrationTests.Fixture
         public MongoFixture()
         {
             _configuration = new TConfiguration();
-            _runner = MongoDbRunner.Start();
-
+            _runner = MongoDbRunner.Start(additionalMongodArguments: "--setParameter enableTestCommands=1");
 
             var mongoClient = _configuration.GetMongoClient(_runner.ConnectionString);
             Collection = mongoClient.GetDatabase(_configuration.DatabaseName)

@@ -6,6 +6,7 @@ using Elastic.Apm.Logging;
 
 namespace Elastic.Apm.Mongo.IntegrationTests.Mocks
 {
+    // todo: use Moq
     public class ConfigurationReader : IConfigurationReader
     {
         public ConfigurationReader(Uri apmServerUrl) => ServerUrls = new[] {apmServerUrl};

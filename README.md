@@ -19,7 +19,12 @@ Install-Package ElasticApm.MongoDB
 MongoDB.Driver uses own event notification approach instead of commonly used [System.Diagnostics.DiagnosticSource](https://github.com/dotnet/corefx/blob/master/src/System.Diagnostics.DiagnosticSource/src/DiagnosticSourceUsersGuide.md). By this reason, before `Elastic.Apm` configuration we need to configure `MongoClient`. It can be done with `ClusterConfigurator` action in `MongoClientSettings`:
 
 ```csharp
+var settings = MongoClientSettings.FromUrl(new MongoUrl(connectionString));
+
+// OR (FromConnectionString is available in MongoDB.Driver 2.7+)
+
 var settings = MongoClientSettings.FromConnectionString(mongoConnectionString);
+
 settings.ClusterConfigurator = builder => builder.Subscribe(new MongoEventSubscriber());
 
 var mongoClient = new MongoClient(settings);
