@@ -20,7 +20,7 @@ stages:
   dependsOn: [] # by specifying an empty array, this stage doesn't depend on the stage before it
   jobs:
     - job:
-      displayName: SonarCloud Analysis
+      displayName: SonarCloud
       variables:
         # workaround due to https://github.com/GitTools/GitVersion/pull/2221
         MSBUILDSINGLELOADCONTEXT: 1
@@ -64,7 +64,7 @@ stages:
           displayName: Test
           inputs:
             command: test
-            arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+            arguments: '--no-restore --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
             nobuild: true
 
         - task: SonarCloudAnalyze@1
