@@ -26,19 +26,19 @@ jobs:
           - script: sed -i -E "s/(<PackageReference Include=\"MongoDB.Driver\" Version=\").*(\" \/>)/\1${{ mongoDriverVersion }}\2/" ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj
           - script: cat ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj
 
-          - task: SonarCloudPrepare@1
-            displayName: Prepare SonarCloud
-            inputs:
-              SonarCloud: 'SonarCloud vhatsura'
-              organization: 'vhatsura'
-              scannerMode: 'MSBuild'
-              projectKey: 'elastic-apm-mongo'
-              projectName: 'elastic-apm-mongo'
-              extraProperties: |
-                # Additional properties that will be passed to the scanner, 
-                # Put one key=value per line, example:
-                # sonar.exclusions=**/*.bin
-                sonar.cs.opencover.reportsPaths="**\coverage.opencover.xml"
+          #          - task: SonarCloudPrepare@1
+          #            displayName: Prepare SonarCloud
+          #            inputs:
+          #              SonarCloud: 'SonarCloud vhatsura'
+          #              organization: 'vhatsura'
+          #              scannerMode: 'MSBuild'
+          #              projectKey: 'elastic-apm-mongo'
+          #              projectName: 'elastic-apm-mongo'
+          #              extraProperties: |
+          #                # Additional properties that will be passed to the scanner, 
+          #                # Put one key=value per line, example:
+          #                # sonar.exclusions=**/*.bin
+          #                sonar.cs.opencover.reportsPaths="**\coverage.opencover.xml"
 
           - task: DotNetCoreCLI@2
             displayName: Build
@@ -54,34 +54,34 @@ jobs:
               arguments: '--configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
               nobuild: true
 
-          - task: SonarCloudAnalyze@1
-            displayName: Run Sonar Scanner
+#          - task: SonarCloudAnalyze@1
+#            displayName: Run Sonar Scanner
+#
+#          - task: SonarCloudPublish@1
+#            displayName: Publish analyze artifacts to Sonar Cloud
+#            inputs:
+#              pollingTimeoutSec: '300'
 
-          - task: SonarCloudPublish@1
-            displayName: Publish analyze artifacts to Sonar Cloud
-            inputs:
-              pollingTimeoutSec: '300'
-
-          # todo: make it as a separate job
-          - task: DotNetCoreCLI@2
-            displayName: Pack
-            inputs:
-              command: pack
-              arguments: '--configuration $(buildConfiguration) --include-symbols'
-              nobuild: true
-
-          - task: PublishBuildArtifacts@1
-            displayName: Publish build artifacts to Azure Pipelines
-            inputs:
-              artifactName: 'packages'
-
-          # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
-          # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160
-          - task: NuGetCommand@2
-            displayName: Publish NuGet package to MyGet
-            inputs:
-              command: 'push'
-              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.snupkg'
-              nuGetFeedType: 'external'
-              publishFeedCredentials: 'Elastic Apm Mongo MyGet'
-            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+#          # todo: make it as a separate job
+#          - task: DotNetCoreCLI@2
+#            displayName: Pack
+#            inputs:
+#              command: pack
+#              arguments: '--configuration $(buildConfiguration) --include-symbols'
+#              nobuild: true
+#
+#          - task: PublishBuildArtifacts@1
+#            displayName: Publish build artifacts to Azure Pipelines
+#            inputs:
+#              artifactName: 'packages'
+#
+#          # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
+#          # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160
+#          - task: NuGetCommand@2
+#            displayName: Publish NuGet package to MyGet
+#            inputs:
+#              command: 'push'
+#              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.snupkg'
+#              nuGetFeedType: 'external'
+#              publishFeedCredentials: 'Elastic Apm Mongo MyGet'
+#            condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
