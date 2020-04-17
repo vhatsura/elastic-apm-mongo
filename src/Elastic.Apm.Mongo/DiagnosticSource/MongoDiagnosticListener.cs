@@ -5,6 +5,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using Elastic.Apm.Api;
 using Elastic.Apm.Logging;
+using MongoDB.Driver;
 using MongoDB.Driver.Core.Events;
 
 namespace Elastic.Apm.Mongo.DiagnosticSource
@@ -122,7 +123,17 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
             {
                 if (!_processingQueries.TryRemove(@event.RequestId, out var span)) return;
                 span.Duration = @event.Duration.TotalMilliseconds;
-                span.CaptureException(@event.Failure);
+
+                switch (@event.Failure)
+                {
+                    case MongoCommandException {} mongoCommandException:
+                        span.CaptureException(mongoCommandException, mongoCommandException.ErrorMessage);
+                        break;
+                    case {} exception:
+                        span.CaptureException(exception);
+                        break;
+                }
+
                 span.End();
             }
             catch (Exception ex)
