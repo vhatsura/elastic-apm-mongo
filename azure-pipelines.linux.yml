@@ -47,5 +47,4 @@ jobs:
             displayName: Test
             inputs:
               command: test
-              arguments: '--no-restore --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
-              nobuild: true
+              arguments: '--no-build  --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
