@@ -37,7 +37,8 @@ stages:
           displayName: Install .Net Core 3.1.x SDK
           inputs:
             packageType: sdk
-            version: '3.1.x'
+            # workaround due to https://github.com/GitTools/GitVersion/pull/2221
+            version: '3.1.103'
                            
         - task: SonarCloudPrepare@1
           displayName: Prepare SonarCloud
