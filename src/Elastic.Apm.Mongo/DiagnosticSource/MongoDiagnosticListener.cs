@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Net;
 using Elastic.Apm.Api;
 using Elastic.Apm.Logging;
 using MongoDB.Driver.Core.Events;
@@ -78,13 +79,23 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
                     Type = "mongo"
                 };
 
-                // todo: fill it
-                // span.Context.Destination
+                if (@event.ConnectionId?.ServerId?.EndPoint != null)
+                {
+                    span.Context.Destination = @event.ConnectionId.ServerId.EndPoint switch
+                    {
+                        IPEndPoint ipEndPoint => new Destination
+                        {
+                            Address = ipEndPoint.Address.ToString(), Port = ipEndPoint.Port
+                        },
+                        DnsEndPoint dnsEndPoint => new Destination {Address = dnsEndPoint.Host, Port = dnsEndPoint.Port},
+                        _ => null
+                    };
+                }
             }
             catch (Exception ex)
             {
                 //ignore
-                _logger.Log(LogLevel.Error, "Exception was thrown while handling 'command started event''", ex, null);
+                _logger.Log(LogLevel.Error, "Exception was thrown while handling 'command started event'", ex, null);
             }
         }
 
