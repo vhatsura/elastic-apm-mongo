@@ -21,6 +21,7 @@ ProjectSection(SolutionItems) = preProject
 	README.md = README.md
 	azure-pipelines.linux.yml = azure-pipelines.linux.yml
 	azure-pipelines.windows.yml = azure-pipelines.windows.yml
+	global.json = global.json
 EndProjectSection
 EndProject
 Global

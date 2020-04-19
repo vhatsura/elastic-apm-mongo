@@ -77,11 +77,17 @@ namespace Elastic.Apm.Mongo.IntegrationTests
             Assert.Single(_payloadSender.TransactionsQueue);
             Assert.True(_payloadSender.TransactionsQueue.TryPeek(out var capturedTransaction));
 
+            var (address, port) = GetDestination(_documents.Database.Client);
+
             Assert.All(_payloadSender.SpansQueue, span =>
             {
                 Assert.Equal(capturedTransaction.Id, span.TransactionId);
                 Assert.Equal(DatabaseName, span.Context.Db.Instance);
                 Assert.Equal(ApiConstants.TypeDb, span.Type);
+
+                Assert.NotNull(span.Context.Destination);
+                Assert.Equal(span.Context.Destination.Address, address);
+                Assert.Equal(span.Context.Destination.Port, port);
             });
 
             Assert.All(_payloadSender.SpansQueue, span => { Assert.Equal(capturedTransaction.Id, span.ParentId); });
@@ -120,6 +126,11 @@ namespace Elastic.Apm.Mongo.IntegrationTests
             Assert.Equal(DatabaseName, capturedSpan.Context.Db.Instance);
             Assert.Equal(ApiConstants.TypeDb, capturedSpan.Type);
 
+            var (address, port) = GetDestination(_documents.Database.Client);
+
+            Assert.NotNull(capturedSpan.Context.Destination);
+            Assert.Equal(capturedSpan.Context.Destination.Address, address);
+            Assert.Equal(capturedSpan.Context.Destination.Port, port);
 
             Assert.Single(_payloadSender.ErrorsQueue);
             Assert.True(_payloadSender.ErrorsQueue.TryPeek(out var capturedError));
@@ -128,6 +139,14 @@ namespace Elastic.Apm.Mongo.IntegrationTests
                 capturedError.GetType().GetProperty("TransactionId")?.GetValue(capturedError)?.ToString());
             Assert.Equal(capturedSpan.Id,
                 capturedError.GetType().GetProperty("ParentId")?.GetValue(capturedError)?.ToString());
+        }
+
+        private static (string Address, int Port) GetDestination(IMongoClient mongoClient)
+        {
+            // in case of connection to replica set with multiple nodes `Servers` property should be checked
+            var serverAddress = mongoClient.Settings.Server;
+
+            return (serverAddress.Host, serverAddress.Port);
         }
     }
 }
