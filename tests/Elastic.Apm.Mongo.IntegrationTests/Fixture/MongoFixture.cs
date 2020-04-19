@@ -18,7 +18,7 @@ namespace Elastic.Apm.Mongo.IntegrationTests.Fixture
             _configuration = new TConfiguration();
 
             _environment = new DockerEnvironmentBuilder()
-                .DockerInDocker(Environment.GetEnvironmentVariable("TF_BUILD") != null)
+                //.DockerInDocker(Environment.GetEnvironmentVariable("TF_BUILD") != null)
                 .AddMongoContainer("mongo")
                 .Build();
         }
