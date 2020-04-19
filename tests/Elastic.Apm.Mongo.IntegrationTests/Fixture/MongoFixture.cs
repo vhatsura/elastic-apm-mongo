@@ -1,7 +1,8 @@
 using System;
 using System.Threading.Tasks;
-using Mongo2Go;
 using MongoDB.Driver;
+using TestEnvironment.Docker;
+using TestEnvironment.Docker.Containers.Mongo;
 using Xunit;
 
 namespace Elastic.Apm.Mongo.IntegrationTests.Fixture
@@ -10,24 +11,41 @@ namespace Elastic.Apm.Mongo.IntegrationTests.Fixture
         where TConfiguration : IMongoConfiguration<TDocument>, new()
     {
         private readonly TConfiguration _configuration;
-        private readonly MongoDbRunner _runner;
+        private readonly DockerEnvironment _environment;
 
         public MongoFixture()
         {
             _configuration = new TConfiguration();
-            _runner = MongoDbRunner.Start(additionalMongodArguments: "--setParameter enableTestCommands=1");
 
-            var mongoClient = _configuration.GetMongoClient(_runner.ConnectionString);
-            Collection = mongoClient.GetDatabase(_configuration.DatabaseName)
-                .GetCollection<TDocument>(_configuration.CollectionName);
+            _environment = new DockerEnvironmentBuilder()
+                .DockerInDocker(Environment.GetEnvironmentVariable("TF_BUILD") != null)
+                .AddMongoContainer("mongo")
+                .Build();
         }
 
-        public IMongoCollection<TDocument> Collection { get; }
+        public IMongoCollection<TDocument> Collection { get; private set; }
 
-        public Task InitializeAsync() => _configuration.InitializeAsync(Collection);
+        public async Task InitializeAsync()
+        {
+            await _environment.Up();
 
-        public Task DisposeAsync() => _configuration.DisposeAsync(Collection);
+            var mongoContainer = _environment.GetContainer<MongoContainer>("mongo");
 
-        public void Dispose() => _runner?.Dispose();
+            var mongoClient = _configuration.GetMongoClient(mongoContainer.GetConnectionString());
+            Collection = mongoClient.GetDatabase(_configuration.DatabaseName)
+                .GetCollection<TDocument>(_configuration.CollectionName);
+
+            await _configuration.InitializeAsync(Collection);
+        }
+
+        public async Task DisposeAsync()
+        {
+            await _configuration.DisposeAsync(Collection);
+
+            await _environment.Down();
+            await _environment.DisposeAsync();
+        }
+
+        public void Dispose() {}
     }
 }
