@@ -41,7 +41,7 @@ jobs:
             displayName: Build
             inputs:
               command: build
-              arguments: '--no-restore --configuration $(buildConfiguration) -v normal'
+              arguments: '--no-restore --disable-parallel --configuration $(buildConfiguration) -v normal'
 
           - task: DotNetCoreCLI@2
             displayName: Test
