@@ -7,16 +7,7 @@ jobs:
           MSBUILDSINGLELOADCONTEXT: 1
         pool:
           vmImage: ubuntu-latest
-        # container: mcr.microsoft.com/dotnet/core/sdk:3.1
         steps:
-          - task: UseDotNet@2
-            displayName: Install .Net Core 2.2.x SDK
-            inputs:
-              packageType: sdk
-              version: '2.2.x'
-
-          # by installing .net core 2.2 we override global path to dotnet executable
-          # In such case host machine decides that only .Net Core 2.2 is installed 
           - task: UseDotNet@2
             displayName: Install .Net Core 3.1.x SDK
             inputs:
@@ -41,7 +32,7 @@ jobs:
             displayName: Build
             inputs:
               command: build
-              arguments: '--no-restore --disable-parallel --configuration $(buildConfiguration) -v normal'
+              arguments: '--no-restore --configuration $(buildConfiguration)'
 
           - task: DotNetCoreCLI@2
             displayName: Test
