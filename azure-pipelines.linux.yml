@@ -41,10 +41,10 @@ jobs:
             displayName: Build
             inputs:
               command: build
-              arguments: '--no-restore --configuration $(buildConfiguration)'
+              arguments: '--no-restore --configuration $(buildConfiguration) -v normal'
 
           - task: DotNetCoreCLI@2
             displayName: Test
             inputs:
               command: test
-              arguments: '--no-build  --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+              arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
