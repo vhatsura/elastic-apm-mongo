@@ -68,7 +68,7 @@ stages:
           inputs:
             command: test
             # https://github.com/tonerdo/coverlet/blob/589e210e740bbf243cb0e57acbff7bf4e1ea8a66/Documentation/MSBuildIntegration.md#note-for-powershell--vsts-users
-            arguments: '--no-build --configuration $(buildConfiguration) -v n /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:ExcludeByAttribute="Obsolete%2cGeneratedCodeAttribute%2cCompilerGeneratedAttribute"'
+            arguments: '--no-build --configuration $(buildConfiguration) -v d /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:ExcludeByAttribute="Obsolete%2cGeneratedCodeAttribute%2cCompilerGeneratedAttribute"'
 
         - task: SonarCloudAnalyze@1
           displayName: Run Sonar Scanner
