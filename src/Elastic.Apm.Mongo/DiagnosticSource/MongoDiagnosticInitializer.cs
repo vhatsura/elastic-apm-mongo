@@ -9,7 +9,10 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
 
         private IDisposable _sourceSubscription;
 
-        internal MongoDiagnosticInitializer(IApmAgent apmAgent) => _apmAgent = apmAgent;
+        internal MongoDiagnosticInitializer(IApmAgent apmAgent)
+        {
+            _apmAgent = apmAgent;
+        }
 
         public void Dispose() => _sourceSubscription?.Dispose();
 

@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MongoDB.Driver;
 
 namespace Elastic.Apm.Mongo.Examples.AspNetCore.Controllers
 {
@@ -10,29 +9,29 @@ namespace Elastic.Apm.Mongo.Examples.AspNetCore.Controllers
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase
     {
-        private static readonly string[] Summaries = new[]
-        {
-            "Freezing", "Bracing", "Chilly", "Cool", "Mild", "Warm", "Balmy", "Hot", "Sweltering", "Scorching"
-        };
-
         private readonly ILogger<WeatherForecastController> _logger;
+        private readonly IMongoCollection<WeatherForecast> _documentsCollection;
 
-        public WeatherForecastController(ILogger<WeatherForecastController> logger)
+        public WeatherForecastController(IMongoClient mongoClient, ILogger<WeatherForecastController> logger)
         {
             _logger = logger;
+            _documentsCollection = mongoClient.GetDatabase("local").GetCollection<WeatherForecast>("documents");
         }
 
         [HttpGet]
-        public IEnumerable<WeatherForecast> Get()
+        public async Task<IActionResult> Get()
         {
-            var rng = new Random();
-            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-                {
-                    Date = DateTime.Now.AddDays(index),
-                    TemperatureC = rng.Next(-20, 55),
-                    Summary = Summaries[rng.Next(Summaries.Length)]
-                })
-                .ToArray();
+            var forecasts = await _documentsCollection.Find(Builders<WeatherForecast>.Filter.Empty)
+                .ToListAsync();
+
+            return Ok(forecasts);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post([FromBody] WeatherForecast forecast)
+        {
+            await _documentsCollection.InsertOneAsync(forecast);
+            return Ok();
         }
     }
 }
