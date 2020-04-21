@@ -22,6 +22,7 @@ ProjectSection(SolutionItems) = preProject
 	azure-pipelines.linux.yml = azure-pipelines.linux.yml
 	azure-pipelines.windows.yml = azure-pipelines.windows.yml
 	global.json = global.json
+	NuGet.config = NuGet.config
 EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{F242F21A-F38D-43C9-B8AF-85C8C6504403}"
