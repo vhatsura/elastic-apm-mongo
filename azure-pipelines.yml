@@ -25,7 +25,7 @@ stages:
         # workaround due to https://github.com/GitTools/GitVersion/pull/2221
         MSBUILDSINGLELOADCONTEXT: 1
       pool:
-        vmImage: ubuntu-latest
+        vmImage: windows-latest
       steps:
         - task: UseDotNet@2
           displayName: Install .Net Core 2.2.x SDK
@@ -66,7 +66,8 @@ stages:
           displayName: Test
           inputs:
             command: test
-            arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:ExcludeByAttribute="Obsolete,GeneratedCodeAttribute,CompilerGeneratedAttribute"'
+            # https://github.com/tonerdo/coverlet/blob/589e210e740bbf243cb0e57acbff7bf4e1ea8a66/Documentation/MSBuildIntegration.md#note-for-powershell--vsts-users
+            arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:ExcludeByAttribute="Obsolete%2cGeneratedCodeAttribute%2cCompilerGeneratedAttribute"'
 
         - task: SonarCloudAnalyze@1
           displayName: Run Sonar Scanner
