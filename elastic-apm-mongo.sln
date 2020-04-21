@@ -29,6 +29,7 @@ ProjectSection(SolutionItems) = preProject
 	examples\apm-server.yml = examples\apm-server.yml
 	examples\docker-compose.yml = examples\docker-compose.yml
 	examples\kibana.yml = examples\kibana.yml
+	examples\README.md = examples\README.md
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastic.Apm.Mongo.Examples.AspNetCore", "examples\Elastic.Apm.Mongo.Examples.AspNetCore\Elastic.Apm.Mongo.Examples.AspNetCore.csproj", "{812C9A58-8DE4-4B7F-8F7F-019D2BD79CFB}"
