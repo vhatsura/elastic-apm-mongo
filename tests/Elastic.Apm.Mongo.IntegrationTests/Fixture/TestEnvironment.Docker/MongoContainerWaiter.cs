@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
@@ -7,6 +8,8 @@ using TestEnvironment.Docker;
 
 namespace Elastic.Apm.Mongo.IntegrationTests.Fixture.TestEnvironment.Docker
 {
+    // in .Net Framework such attribute cannot be used on assembly level
+    [ExcludeFromCodeCoverage]
     public class MongoContainerWaiter : IContainerWaiter<MongoContainer>
     {
         private readonly ILogger _logger;

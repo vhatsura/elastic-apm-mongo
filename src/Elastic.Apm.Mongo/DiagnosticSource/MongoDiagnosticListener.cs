@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using System.Net;
 using Elastic.Apm.Api;
 using Elastic.Apm.Logging;
@@ -12,7 +13,6 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
     {
         private readonly IApmAgent _apmAgent;
         private readonly IApmLogger _logger;
-
 
         private readonly ConcurrentDictionary<int, ISpan> _processingQueries = new ConcurrentDictionary<int, ISpan>();
 
@@ -47,11 +47,13 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
             }
         }
 
+        [ExcludeFromCodeCoverage]
         public void OnError(Exception error)
         {
             // do nothing because it's not necessary to handle such event from provider
         }
 
+        [ExcludeFromCodeCoverage]
         public void OnCompleted()
         {
             // do nothing because it's not necessary to handle such event from provider
@@ -95,7 +97,7 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
             catch (Exception ex)
             {
                 //ignore
-                _logger.Log(LogLevel.Error, "Exception was thrown while handling 'command started event'", ex, null);
+                _logger?.Log(LogLevel.Error, "Exception was thrown while handling 'command started event'", ex, null);
             }
         }
 
@@ -110,7 +112,7 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
             catch (Exception ex)
             {
                 // ignore
-                _logger.Log(LogLevel.Error, "Exception was thrown while handling 'command succeeded event''", ex, null);
+                _logger?.Log(LogLevel.Error, "Exception was thrown while handling 'command succeeded event'", ex, null);
             }
         }
 
@@ -126,7 +128,7 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
             catch (Exception ex)
             {
                 // ignore
-                _logger.Log(LogLevel.Error, "Exception was thrown while handling 'command failed event''", ex, null);
+                _logger?.Log(LogLevel.Error, "Exception was thrown while handling 'command failed event'", ex, null);
             }
         }
     }

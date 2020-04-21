@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
@@ -13,6 +14,8 @@ using Xunit;
 
 namespace Elastic.Apm.Mongo.IntegrationTests
 {
+    // in .Net Framework such attribute cannot be used on assembly level
+    [ExcludeFromCodeCoverage]
     public class MongoApmTests : IClassFixture<MongoFixture<MongoApmTests.MongoConfiguration, BsonDocument>>,
         IDisposable
     {

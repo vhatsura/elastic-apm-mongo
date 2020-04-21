@@ -1,9 +1,12 @@
 using System.Collections.Concurrent;
+using System.Diagnostics.CodeAnalysis;
 using Elastic.Apm.Api;
 using Elastic.Apm.Report;
 
 namespace Elastic.Apm.Mongo.IntegrationTests.Mocks
 {
+    // in .Net Framework such attribute cannot be used on assembly level
+    [ExcludeFromCodeCoverage]
     public class MockPayloadSender : IPayloadSender
     {
         public ConcurrentQueue<IError> ErrorsQueue { get; } = new ConcurrentQueue<IError>();
@@ -18,13 +21,6 @@ namespace Elastic.Apm.Mongo.IntegrationTests.Mocks
 
         public void QueueMetrics(IMetricSet metrics)
         {
-        }
-
-        public void DropQueues()
-        {
-            ErrorsQueue.Clear();
-            TransactionsQueue.Clear();
-            SpansQueue.Clear();
         }
     }
 }
