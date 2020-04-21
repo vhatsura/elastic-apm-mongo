@@ -12,7 +12,10 @@ namespace Elastic.Apm.Mongo
         /// <summary>
         ///     Creates instance of <see cref="MongoEventSubscriber" /> class.
         /// </summary>
-        public MongoEventSubscriber() => _subscriber = new ReflectionEventSubscriber(new MongoListener());
+        public MongoEventSubscriber()
+        {
+            _subscriber = new ReflectionEventSubscriber(new MongoListener());
+        }
 
         /// <summary>
         ///     Tries to get an event handler for an event of type <typeparamref name="TEvent" />.

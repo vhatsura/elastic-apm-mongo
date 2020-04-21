@@ -22,7 +22,18 @@ ProjectSection(SolutionItems) = preProject
 	azure-pipelines.linux.yml = azure-pipelines.linux.yml
 	azure-pipelines.windows.yml = azure-pipelines.windows.yml
 	global.json = global.json
+	NuGet.config = NuGet.config
 EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "examples", "examples", "{F242F21A-F38D-43C9-B8AF-85C8C6504403}"
+ProjectSection(SolutionItems) = preProject
+	examples\apm-server.yml = examples\apm-server.yml
+	examples\docker-compose.yml = examples\docker-compose.yml
+	examples\kibana.yml = examples\kibana.yml
+	examples\README.md = examples\README.md
+EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastic.Apm.Mongo.Examples.AspNetCore", "examples\Elastic.Apm.Mongo.Examples.AspNetCore\Elastic.Apm.Mongo.Examples.AspNetCore.csproj", "{812C9A58-8DE4-4B7F-8F7F-019D2BD79CFB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,6 +53,10 @@ Global
 		{891959DB-7BB7-449C-B55E-15782B838384}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{891959DB-7BB7-449C-B55E-15782B838384}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{891959DB-7BB7-449C-B55E-15782B838384}.Release|Any CPU.Build.0 = Release|Any CPU
+		{812C9A58-8DE4-4B7F-8F7F-019D2BD79CFB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{812C9A58-8DE4-4B7F-8F7F-019D2BD79CFB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{812C9A58-8DE4-4B7F-8F7F-019D2BD79CFB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{812C9A58-8DE4-4B7F-8F7F-019D2BD79CFB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -52,5 +67,6 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{D6CD7340-ECF2-4F15-80F1-4016DB1AC747} = {E5AE4FE2-7D60-4932-AC18-E6BC830DDC05}
 		{891959DB-7BB7-449C-B55E-15782B838384} = {E5AE4FE2-7D60-4932-AC18-E6BC830DDC05}
+		{812C9A58-8DE4-4B7F-8F7F-019D2BD79CFB} = {F242F21A-F38D-43C9-B8AF-85C8C6504403}
 	EndGlobalSection
 EndGlobal

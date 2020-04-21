@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,11 +9,16 @@ using TestEnvironment.Docker;
 
 namespace Elastic.Apm.Mongo.IntegrationTests.Fixture.TestEnvironment.Docker
 {
+    // in .Net Framework such attribute cannot be used on assembly level
+    [ExcludeFromCodeCoverage]
     public class MongoContainerCleaner : IContainerCleaner<MongoContainer>
     {
         private readonly ILogger _logger;
 
-        public MongoContainerCleaner(ILogger logger = null) => _logger = logger;
+        public MongoContainerCleaner(ILogger logger = null)
+        {
+            _logger = logger;
+        }
 
         public async Task Cleanup(MongoContainer container, CancellationToken token = new CancellationToken())
         {

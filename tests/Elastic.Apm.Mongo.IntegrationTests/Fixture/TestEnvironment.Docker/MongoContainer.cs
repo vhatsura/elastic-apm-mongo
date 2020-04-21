@@ -1,10 +1,13 @@
 using System.Collections.Generic;
+using System.Diagnostics.CodeAnalysis;
 using Docker.DotNet;
 using Microsoft.Extensions.Logging;
 using TestEnvironment.Docker;
 
 namespace Elastic.Apm.Mongo.IntegrationTests.Fixture.TestEnvironment.Docker
 {
+    // in .Net Framework such attribute cannot be used on assembly level
+    [ExcludeFromCodeCoverage]
     // TestEnvironment.Docker.Containers.Mongo has dependency on MongoDB.Driver of 2.8.0 version
     public class MongoContainer : Container
     {

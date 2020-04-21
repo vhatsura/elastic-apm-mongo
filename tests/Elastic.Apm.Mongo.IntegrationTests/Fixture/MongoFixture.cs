@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using System.Threading.Tasks;
 using Elastic.Apm.Mongo.IntegrationTests.Fixture.TestEnvironment.Docker;
 using MongoDB.Driver;
@@ -7,6 +8,8 @@ using Xunit;
 
 namespace Elastic.Apm.Mongo.IntegrationTests.Fixture
 {
+    // in .Net Framework such attribute cannot be used on assembly level
+    [ExcludeFromCodeCoverage]
     public class MongoFixture<TConfiguration, TDocument> : IAsyncLifetime, IDisposable
         where TConfiguration : IMongoConfiguration<TDocument>, new()
     {

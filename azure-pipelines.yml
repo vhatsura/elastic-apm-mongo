@@ -51,8 +51,9 @@ stages:
            extraProperties: |
              # Additional properties that will be passed to the scanner, 
              # Put one key=value per line, example:
-             # sonar.exclusions=**/*.bin
-             sonar.cs.opencover.reportsPaths="**\coverage.opencover.xml"
+             sonar.exclusions=examples/**/*
+             sonar.test.exclusions=tests/**/*
+             sonar.cs.opencover.reportsPaths=**/*.opencover.xml
 
         - task: DotNetCoreCLI@2
           displayName: Build
@@ -63,9 +64,11 @@ stages:
 
         - task: DotNetCoreCLI@2
           displayName: Test
+          timeoutInMinutes: 5
           inputs:
             command: test
-            arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover'
+            # https://github.com/tonerdo/coverlet/blob/589e210e740bbf243cb0e57acbff7bf4e1ea8a66/Documentation/MSBuildIntegration.md#note-for-powershell--vsts-users
+            arguments: '--no-build --configuration $(buildConfiguration) /p:CollectCoverage=true /p:CoverletOutputFormat=opencover /p:ExcludeByAttribute="Obsolete%2cGeneratedCodeAttribute%2cCompilerGeneratedAttribute"'
 
         - task: SonarCloudAnalyze@1
           displayName: Run Sonar Scanner

@@ -1,5 +1,6 @@
 using System;
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 
 namespace Elastic.Apm.Mongo.DiagnosticSource
 {
@@ -9,15 +10,20 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
 
         private IDisposable _sourceSubscription;
 
-        internal MongoDiagnosticInitializer(IApmAgent apmAgent) => _apmAgent = apmAgent;
+        internal MongoDiagnosticInitializer(IApmAgent apmAgent)
+        {
+            _apmAgent = apmAgent;
+        }
 
         public void Dispose() => _sourceSubscription?.Dispose();
 
+        [ExcludeFromCodeCoverage]
         public void OnCompleted()
         {
             // do nothing because it's not necessary to handle such event from provider
         }
 
+        [ExcludeFromCodeCoverage]
         public void OnError(Exception error)
         {
             // do nothing because it's not necessary to handle such event from provider
