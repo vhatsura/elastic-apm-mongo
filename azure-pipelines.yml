@@ -51,7 +51,8 @@ stages:
            extraProperties: |
              # Additional properties that will be passed to the scanner, 
              # Put one key=value per line, example:
-             # sonar.exclusions=**/*.bin
+             sonar.exclusions=examples/**/*
+             sonar.test.exclusions=tests/**/*
              sonar.cs.opencover.reportsPaths="**\coverage.opencover.xml"
 
         - task: DotNetCoreCLI@2
