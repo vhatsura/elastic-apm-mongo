@@ -3,10 +3,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
 using Elastic.Apm.Api;
+using Elastic.Apm.Config;
 using Elastic.Apm.Mongo.IntegrationTests.Fixture;
 using Elastic.Apm.Mongo.IntegrationTests.Mocks;
 using MongoDB.Bson;
 using MongoDB.Driver;
+using Moq;
 using Xunit;
 
 namespace Elastic.Apm.Mongo.IntegrationTests
@@ -19,9 +21,14 @@ namespace Elastic.Apm.Mongo.IntegrationTests
             _documents = fixture.Collection;
             _payloadSender = new MockPayloadSender();
 
-            var config =
-                new AgentComponents(configurationReader: new ConfigurationReader(new Uri("http://localhost:8200")),
-                    payloadSender: _payloadSender);
+            var configurationReaderMock = new Mock<IConfigurationReader>();
+            configurationReaderMock.Setup(x => x.TransactionSampleRate)
+                .Returns(() => 1.0);
+            configurationReaderMock.Setup(x => x.TransactionMaxSpans)
+                .Returns(() => 50);
+
+            var config = new AgentComponents(configurationReader: configurationReaderMock.Object,
+                payloadSender: _payloadSender);
 
             var apmAgentType = typeof(IApmAgent).Assembly.GetType("Elastic.Apm.ApmAgent");
             _agent = (IApmAgent) apmAgentType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First()

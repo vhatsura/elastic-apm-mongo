@@ -12,7 +12,10 @@ namespace Elastic.Apm.Mongo.IntegrationTests.Fixture.TestEnvironment.Docker
     {
         private readonly ILogger _logger;
 
-        public MongoContainerCleaner(ILogger logger = null) => _logger = logger;
+        public MongoContainerCleaner(ILogger logger = null)
+        {
+            _logger = logger;
+        }
 
         public async Task Cleanup(MongoContainer container, CancellationToken token = new CancellationToken())
         {
