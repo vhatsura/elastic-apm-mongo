@@ -1,5 +1,8 @@
 trigger:
-  - master
+  branches:
+    include:
+    - master
+    - refs/tags/*
 
 variables:
   buildConfiguration: 'Release'
@@ -7,6 +10,7 @@ variables:
 stages:
 - stage: IntegrationTests
   displayName: Integration Tests
+  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/')
   jobs:
     - template: azure-pipelines.linux.yml
       parameters:
@@ -18,6 +22,7 @@ stages:
 - stage: CodeAnalysis
   displayName: Code Analysis
   dependsOn: [] # by specifying an empty array, this stage doesn't depend on the stage before it
+  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/')
   jobs:
     - job:
       displayName: SonarCloud
@@ -77,6 +82,7 @@ stages:
           displayName: Publish analyze artifacts to Sonar Cloud
           inputs:
             pollingTimeoutSec: '300'
+          
             
 - stage: Artifacts
   dependsOn: [ 'IntegrationTests', 'CodeAnalysis' ]
@@ -101,7 +107,7 @@ stages:
     #          # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
     #          # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160
     #          - task: NuGetCommand@2
-    #            displayName: Publish NuGet package to MyGet
+    #            displayName: Publish NuGet package to NuGet
     #            inputs:
     #              command: 'push'
     #              packagesToPush: '$(Build.ArtifactStagingDirectory)/**/*.nupkg;$(Build.ArtifactStagingDirectory)/**/*.snupkg'
