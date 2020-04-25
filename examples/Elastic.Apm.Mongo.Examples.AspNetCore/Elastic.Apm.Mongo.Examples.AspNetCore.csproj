@@ -1,20 +1,21 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
 
-    <PropertyGroup>
-        <TargetFramework>netcoreapp3.1</TargetFramework>
-    </PropertyGroup>
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
 
-    <ItemGroup>
-      <PackageReference Include="Elastic.Apm.AspNetCore" Version="1.4.0" />
-      <!-- https://github.com/mongodb/mongo-csharp-driver/pull/372 -->
-      <PackageReference Include="MongoDB.Driver" Version="2.8.1" />
-      <PackageReference Include="TestEnvironment.Docker" Version="1.3.4" />
-      <PackageReference Include="TestEnvironment.Docker.Containers.Mongo" Version="1.0.5" />
-    </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Elastic.Apm.AspNetCore" Version="1.4.0"/>
+    <!-- https://github.com/mongodb/mongo-csharp-driver/pull/372 -->
+    <PackageReference Include="MongoDB.Driver" Version="2.8.1"/>
+    <PackageReference Include="TestEnvironment.Docker" Version="1.3.4"/>
+    <PackageReference Include="TestEnvironment.Docker.Containers.Mongo" Version="1.0.5"/>
+  </ItemGroup>
 
-    <ItemGroup>
-      <ProjectReference Include="..\..\src\Elastic.Apm.Mongo\Elastic.Apm.Mongo.csproj" />
-    </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\src\Elastic.Apm.Mongo\Elastic.Apm.Mongo.csproj"/>
+  </ItemGroup>
 
 
 </Project>
