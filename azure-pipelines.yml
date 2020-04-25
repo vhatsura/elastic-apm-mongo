@@ -119,8 +119,14 @@ stages:
           inputs:
             artifactName: 'packages'
 
+        - script: echo "##vso[task.setvariable variable=branch] git branch --contains tags/$BUILD_SOURCEBRANCHNAME"
+          condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
+          
+        - script: echo "##vso[task.setvariable variable=branch] $BUILD_SOURCEBRANCHNAME"
+          condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/')  
+
         - script: echo Hello!
-          condition: and(eq(variables['Build.SourceBranch'], 'refs/heads/master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+          condition: and(eq(variables['branch'], 'refs/heads/master'))
 
 #        # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
 #        # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160    
