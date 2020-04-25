@@ -88,7 +88,8 @@ stages:
   dependsOn: [ 'IntegrationTests', 'CodeAnalysis' ]
   jobs:
     - job:
-      displayName: Pack and Publish Artifacts  
+      displayName: Pack and Publish Artifacts
+      condition: or(and(always(), startsWith(variables['Build.SourceBranch'], 'refs/tags/')), succeeded())
       variables:
         # workaround due to https://github.com/GitTools/GitVersion/pull/2221
         MSBUILDSINGLELOADCONTEXT: 1
