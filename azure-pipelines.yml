@@ -12,10 +12,11 @@ variables:
 
 stages:
 - stage: Diagnostic
-  displayName: Print Diagnostic Info
+  displayName: Diagnostic Info
   condition: eq(variables['System.Debug'], 'true')
   jobs:
     - job:
+      displayName: Print Azure Pipelines Diagnostic Info
       steps:
         - task: CmdLine@2
           displayName: Print current environment variables
@@ -24,7 +25,7 @@ stages:
   
 - stage: IntegrationTests
   displayName: Integration Tests
-  condition: not(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+  dependsOn: [] # by specifying an empty array, this stage doesn't depend on the stage before it
   jobs:
     - template: azure-pipelines.linux.yml
       parameters:
@@ -39,7 +40,7 @@ stages:
   condition: not(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
   jobs:
     - job:
-      displayName: SonarCloud
+      displayName: Run Sonar Cloud
       variables:
         # workaround due to https://github.com/GitTools/GitVersion/pull/2221
         MSBUILDSINGLELOADCONTEXT: 1
@@ -99,11 +100,10 @@ stages:
           
             
 - stage: Artifacts
-  dependsOn: [ 'IntegrationTests', 'CodeAnalysis' ]
+  dependsOn: [ 'IntegrationTests' ]
   jobs:
     - job:
       displayName: Pack and Publish Artifacts
-      condition: or(and(always(), startsWith(variables['Build.SourceBranch'], 'refs/tags/')), succeeded())
       variables:
         # workaround due to https://github.com/GitTools/GitVersion/pull/2221
         MSBUILDSINGLELOADCONTEXT: 1
