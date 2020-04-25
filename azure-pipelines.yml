@@ -11,6 +11,17 @@ variables:
   buildConfiguration: 'Release'
 
 stages:
+- stage: Diagnostic
+  displayName: Print Diagnostic Info
+  condition: eq(variables['System.Debug'], 'true')
+  jobs:
+    - job:
+      steps:
+        - task: CmdLine@2
+          displayName: Print current environment variables
+          inputs:
+            script: 'set'
+  
 - stage: IntegrationTests
   displayName: Integration Tests
   condition: not(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
