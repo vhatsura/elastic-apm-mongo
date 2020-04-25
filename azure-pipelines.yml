@@ -3,6 +3,9 @@ trigger:
     include:
     - master
     - refs/tags/*
+  paths:
+    exclude:
+      - README.md
 
 variables:
   buildConfiguration: 'Release'
@@ -10,7 +13,7 @@ variables:
 stages:
 - stage: IntegrationTests
   displayName: Integration Tests
-  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/')
+  condition: ne(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
   jobs:
     - template: azure-pipelines.linux.yml
       parameters:
@@ -22,7 +25,7 @@ stages:
 - stage: CodeAnalysis
   displayName: Code Analysis
   dependsOn: [] # by specifying an empty array, this stage doesn't depend on the stage before it
-  condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/')
+  condition: ne(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
   jobs:
     - job:
       displayName: SonarCloud
