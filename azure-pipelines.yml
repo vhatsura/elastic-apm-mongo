@@ -119,11 +119,14 @@ stages:
           inputs:
             artifactName: 'packages'
 
-        - script: echo "##vso[task.setvariable variable=branch] git branch --contains tags/$BUILD_SOURCEBRANCHNAME"
+        - script: |
+            COMMAND="$(git branch --contains tags/$BUILD_SOURCEBRANCHNAME)"
+            echo "##vso[task.setvariable variable=branch]${COMMAND}"
           condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
           
-        - script: echo "##vso[task.setvariable variable=branch] $BUILD_SOURCEBRANCHNAME"
-          condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/')  
+        - script: |
+            echo "##vso[task.setvariable variable=branch]$BUILD_SOURCEBRANCHNAME"
+          condition: startsWith(variables['Build.SourceBranch'], 'refs/pull/')  
 
         - script: echo Hello!
           condition: eq(variables['branch'], 'refs/heads/master')
