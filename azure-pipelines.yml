@@ -126,7 +126,7 @@ stages:
           condition: startsWith(variables['Build.SourceBranch'], 'refs/heads/')  
 
         - script: echo Hello!
-          condition: and(eq(variables['branch'], 'refs/heads/master'))
+          condition: eq(variables['branch'], 'refs/heads/master')
 
 #        # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
 #        # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160    
