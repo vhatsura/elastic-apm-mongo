@@ -41,9 +41,6 @@ stages:
   jobs:
     - job:
       displayName: Run Sonar Cloud
-      variables:
-        # workaround due to https://github.com/GitTools/GitVersion/pull/2221
-        MSBUILDSINGLELOADCONTEXT: 1
       pool:
         vmImage: ubuntu-latest
       steps:
@@ -57,8 +54,7 @@ stages:
           displayName: Install .Net Core 3.1.x SDK
           inputs:
             packageType: sdk
-            # workaround due to https://github.com/GitTools/GitVersion/pull/2221
-            version: '3.1.103'
+            version: '3.1.x'
                            
         - task: SonarCloudPrepare@1
           displayName: Prepare SonarCloud
@@ -104,9 +100,6 @@ stages:
   jobs:
     - job:
       displayName: Pack and Publish Artifacts
-      variables:
-        # workaround due to https://github.com/GitTools/GitVersion/pull/2221
-        MSBUILDSINGLELOADCONTEXT: 1
       steps:
         - task: DotNetCoreCLI@2
           displayName: Pack

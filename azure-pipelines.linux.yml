@@ -2,9 +2,6 @@ jobs:
   - ${{ each mongoDriverVersion in parameters.mongoDriverVersions }}:
       - job:
         displayName: ${{ format('MongoDB Driver Version:{0}', mongoDriverVersion) }}
-        variables:
-          # workaround due to https://github.com/GitTools/GitVersion/pull/2221
-          MSBUILDSINGLELOADCONTEXT: 1
         pool:
           vmImage: ubuntu-latest
         steps:
@@ -12,8 +9,7 @@ jobs:
             displayName: Install .Net Core 3.1.x SDK
             inputs:
               packageType: sdk
-              # workaround due to https://github.com/GitTools/GitVersion/pull/2221
-              version: '3.1.103'
+              version: '3.1.x'
 
           - script: sed -i -E "s/(<PackageReference Include=\"MongoDB.Driver\" Version=\").*(\" \/>)/\1${{ mongoDriverVersion }}\2/" ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj
             displayName: Replace MongoDB.Driver version
