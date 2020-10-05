@@ -22,17 +22,6 @@ stages:
           displayName: Print current environment variables
           inputs:
             script: 'set'
-  
-- stage: IntegrationTests
-  displayName: Integration Tests
-  dependsOn: [] # by specifying an empty array, this stage doesn't depend on the stage before it
-  jobs:
-    - template: azure-pipelines.linux.yml
-      parameters:
-        mongoDriverVersions: [ '2.3.0', '2.4.4', '2.5.1', '2.6.1', '2.7.3', '2.8.1', '2.9.3', '2.10.3' ]
-    #- template: azure-pipelines.windows.yml
-    #  parameters:
-    #    mongoDriverVersions: [ '2.3.0', '2.4.4', '2.5.1', '2.6.1', '2.7.3', '2.8.1', '2.9.3', '2.10.3' ]
     
 - stage: CodeAnalysis
   displayName: Code Analysis

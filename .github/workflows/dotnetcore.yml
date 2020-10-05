@@ -13,6 +13,7 @@ jobs:
     strategy:
       matrix:
         dotnet-version: [3.1.x]
+        mongo-driver-version: [ '2.3.0', '2.4.4', '2.5.1', '2.6.1', '2.7.3', '2.8.1', '2.9.3', '2.10.3' ]
 
     steps:
 
@@ -25,6 +26,12 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
 
+    - name: Set MongoDB.Driver version to ${{ matrix.mongo-driver-version }}
+      run: sed -i -E "s/(<PackageReference Include=\"MongoDB.Driver\" Version=\").*(\" \/>)/\1${{ matrix.mongo-driver-version }}\2/" ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj     
+
+    - name: Print replaced content
+      run: cat ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj  
+
     - name: Install dependencies
       run: dotnet restore
 
@@ -32,4 +39,4 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Test
-      run: dotnet test --configuration Release --no-build --verbosity normal
+      run: dotnet test --configuration Release --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
