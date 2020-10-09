@@ -63,20 +63,14 @@ jobs:
       with:
         versionSpec: '5.3.x'
 
-    - name: Install dependencies
-      run: dotnet restore
-
-    - name: Build
-      run: dotnet build --configuration Release --no-restore
-
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
       uses: gittools/actions/gitversion/execute@v0.9.4
       with:
-        additionalArguments: /updateAssemblyInfo 
+        additionalArguments: /updateAssemblyInfo
 
     - name: Pack
-      run: dotnet pack --configuration Release --no-build --include-symbols --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      run: dotnet pack --configuration Release --include-symbols --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}
       
     - uses: actions/upload-artifact@v2
       with:
