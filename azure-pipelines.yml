@@ -53,8 +53,7 @@ stages:
         - task: gitversion/execute@0
           displayName: Use GitVersion
           inputs:
-            updateAssemblyInfo: true
-            updateAssemblyInfoFilename: './src/Elastic.Apm.Mongo/Properties/AssemblyInfo.cs'  
+            additionalArguments: '/updateAssemblyInfo'
                            
         - task: SonarCloudPrepare@1
           displayName: Prepare SonarCloud
