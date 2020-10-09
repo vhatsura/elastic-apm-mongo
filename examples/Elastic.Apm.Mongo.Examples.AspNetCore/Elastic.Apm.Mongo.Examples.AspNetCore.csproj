@@ -10,7 +10,7 @@
     <!-- https://github.com/mongodb/mongo-csharp-driver/pull/372 -->
     <PackageReference Include="MongoDB.Driver" Version="2.8.1"/>
     <PackageReference Include="TestEnvironment.Docker" Version="1.3.7"/>
-    <PackageReference Include="TestEnvironment.Docker.Containers.Mongo" Version="1.0.6"/>
+    <PackageReference Include="TestEnvironment.Docker.Containers.Mongo" Version="1.1.7"/>
   </ItemGroup>
 
   <ItemGroup>
