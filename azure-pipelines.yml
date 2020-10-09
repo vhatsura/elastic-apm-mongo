@@ -84,40 +84,40 @@ stages:
             pollingTimeoutSec: '300'
           
             
-- stage: Artifacts
-  dependsOn: [ 'IntegrationTests' ]
-  jobs:
-    - job:
-      displayName: Pack and Publish Artifacts
-      steps:
-        - task: DotNetCoreCLI@2
-          displayName: Pack
-          inputs:
-            command: pack
-            includesymbols: true
-            arguments: '--configuration $(buildConfiguration)'
 
-        - task: PublishBuildArtifacts@1
-          displayName: Publish build artifacts to Azure Pipelines
-          inputs:
-            artifactName: 'packages'
-
-        - script: |
-            COMMAND="$(git branch --contains tags/$BUILD_SOURCEBRANCHNAME)"
-            echo "##vso[task.setvariable variable=branch]${COMMAND}"
-          displayName: Identify Branch Name of tag  
-          condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/') 
-
-        # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
-        # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160    
-        - task: DotNetCoreCLI@2
-          displayName: Publish NuGet package to NuGet
-          # 'git branch --contains' command returns list of branches. In addition, two space characters are in name.
-          condition: and(in(variables['branch'], 'master', '  master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
-          inputs:
-            command: custom
-            custom: nuget
-            arguments: >
-              push $(Build.ArtifactStagingDirectory)/ElasticApm.MongoDB.$(Build.SourceBranchName).nupkg
-              -s https://api.nuget.org/v3/index.json
-              -k $(NuGetApiKey)
+#- stage: Artifacts
+#  jobs:
+#    - job:
+#      displayName: Pack and Publish Artifacts
+#      steps:
+#        - task: DotNetCoreCLI@2
+#          displayName: Pack
+#          inputs:
+#            command: pack
+#            includesymbols: true
+#            arguments: '--configuration $(buildConfiguration)'
+#
+#        - task: PublishBuildArtifacts@1
+#          displayName: Publish build artifacts to Azure Pipelines
+#          inputs:
+#            artifactName: 'packages'
+#
+#        - script: |
+#            COMMAND="$(git branch --contains tags/$BUILD_SOURCEBRANCHNAME)"
+#            echo "##vso[task.setvariable variable=branch]${COMMAND}"
+#          displayName: Identify Branch Name of tag  
+#          condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/') 
+#
+#        # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
+#        # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160    
+#        - task: DotNetCoreCLI@2
+#          displayName: Publish NuGet package to NuGet
+#          # 'git branch --contains' command returns list of branches. In addition, two space characters are in name.
+#          condition: and(in(variables['branch'], 'master', '  master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+#          inputs:
+#            command: custom
+#            custom: nuget
+#            arguments: >
+#              push $(Build.ArtifactStagingDirectory)/ElasticApm.MongoDB.$(Build.SourceBranchName).nupkg
+#              -s https://api.nuget.org/v3/index.json
+#              -k $(NuGetApiKey)

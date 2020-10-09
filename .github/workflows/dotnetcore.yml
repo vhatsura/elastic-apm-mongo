@@ -18,8 +18,6 @@ jobs:
     steps:
 
     - uses: actions/checkout@v2
-      with:
-        fetch-depth: 0
 
     - name: Setup .NET Core ${{ matrix.dotnet-version }}
       uses: actions/setup-dotnet@v1
@@ -40,3 +38,39 @@ jobs:
 
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+  artifacts:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    strategy:
+      matrix:
+        dotnet-version: [ 3.1.x ]
+        
+    steps:
+    
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  
+        
+    - name: Setup .NET Core ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+          
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.4
+      with:
+        versionSpec: '5.3.x'
+
+    - name: Use GitVersion
+      id: gitversion # step id used as reference for output values
+      uses: gittools/actions/gitversion/execute@v0.9.4
+        
+    - name: Pack
+      run: dotnet pack --configuration Release --include-symbols
+      
+    - uses: actions/upload-artifact@v2
+      with:
+        name: packages
+        path: ./**/*.[s]nupkg
