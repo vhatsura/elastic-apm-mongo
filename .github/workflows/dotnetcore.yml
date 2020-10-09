@@ -67,7 +67,9 @@ jobs:
       id: gitversion # step id used as reference for output values
       uses: gittools/actions/gitversion/execute@v0.9.4
       with:
-        additionalArguments: /updateAssemblyInfo
+        updateAssemblyInfo: true
+        updateAssemblyInfoFilename: ./src/Elastic.Apm.Mongo/Properties/AssemblyInfo.cs
+
 
     - name: Pack
       run: dotnet pack --configuration Release --include-symbols --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}
