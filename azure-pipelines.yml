@@ -90,18 +90,6 @@ stages:
 #    - job:
 #      displayName: Pack and Publish Artifacts
 #      steps:
-#        - task: DotNetCoreCLI@2
-#          displayName: Pack
-#          inputs:
-#            command: pack
-#            includesymbols: true
-#            arguments: '--configuration $(buildConfiguration)'
-#
-#        - task: PublishBuildArtifacts@1
-#          displayName: Publish build artifacts to Azure Pipelines
-#          inputs:
-#            artifactName: 'packages'
-#
 #        - script: |
 #            COMMAND="$(git branch --contains tags/$BUILD_SOURCEBRANCHNAME)"
 #            echo "##vso[task.setvariable variable=branch]${COMMAND}"
