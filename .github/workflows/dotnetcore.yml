@@ -63,15 +63,27 @@ jobs:
       with:
         versionSpec: '5.3.x'
 
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values
       uses: gittools/actions/gitversion/execute@v0.9.4
       with:
         updateAssemblyInfo: true
-        updateAssemblyInfoFilename: ./src/Elastic.Apm.Mongo/Properties/AssemblyInfo.cs
+        updateAssemblyInfoFilename: ./src/Elastic.Apm.Mongo/obj/Release/netstandard2.0/Elastic.Apm.Mongo.AssemblyInfo.cs
+        
+    - name: Use GitVersion
+      uses: gittools/actions/gitversion/execute@v0.9.4
+      with:
+        updateAssemblyInfo: true
+        updateAssemblyInfoFilename: ./src/Elastic.Apm.Mongo/obj/Release/net461/Elastic.Apm.Mongo.AssemblyInfo.cs    
 
     - name: Pack
-      run: dotnet pack --configuration Release --include-symbols --output nupkgs
+      run: dotnet pack --configuration Release --no-build --include-symbols --output nupkgs 
       
     - uses: actions/upload-artifact@v2
       with:
