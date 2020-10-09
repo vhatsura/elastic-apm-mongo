@@ -54,7 +54,7 @@ stages:
           displayName: Use GitVersion
           inputs:
             updateAssemblyInfo: true
-            updateAssemblyInfoFilename: ./src/Elastic.Apm.Mongo/Properties/AssemblyInfo.cs  
+            updateAssemblyInfoFilename: './src/Elastic.Apm.Mongo/Properties/AssemblyInfo.cs'  
                            
         - task: SonarCloudPrepare@1
           displayName: Prepare SonarCloud
@@ -75,8 +75,7 @@ stages:
           displayName: Build
           inputs:
             command: build
-            # disable parallel restore due to https://github.com/GitTools/GitVersion/issues/1381
-            arguments: '--disable-parallel --configuration $(buildConfiguration)'
+            arguments: '--configuration $(buildConfiguration)'
 
         - task: DotNetCoreCLI@2
           displayName: Test
