@@ -1,0 +1,102 @@
+name: .NET Core CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    strategy:
+      matrix:
+        dotnet-version: [3.1.x]
+        mongo-driver-version: [ '2.3.0', '2.4.4', '2.5.1', '2.6.1', '2.7.3', '2.8.1', '2.9.3', '2.10.3' ]
+
+    steps:
+
+    - uses: actions/checkout@v2
+
+    - name: Setup .NET Core ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+   
+    - name: Set MongoDB.Driver version to ${{ matrix.mongo-driver-version }}
+      run: sed -i -E "s/(<PackageReference Include=\"MongoDB.Driver\" Version=\").*(\" \/>)/\1${{ matrix.mongo-driver-version }}\2/" ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj
+
+    - name: Print replaced content
+      run: cat ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj
+
+    - name: Install dependencies
+      run: dotnet restore
+
+    - name: Build
+      run: dotnet build --configuration Release --no-restore
+
+    - name: Test
+      run: dotnet test --configuration Release --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+
+  artifacts:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+
+    strategy:
+      matrix:
+        dotnet-version: [ 3.1.x ]
+        
+    steps:
+    
+    - uses: actions/checkout@v2
+      with:
+        fetch-depth: 0  
+        
+    - name: Setup .NET Core ${{ matrix.dotnet-version }}
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+          
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.4
+      with:
+        versionSpec: '5.3.x'
+
+    - name: Use GitVersion
+      id: gitversion # step id used as reference for output values
+      uses: gittools/actions/gitversion/execute@v0.9.4
+      with:
+        updateAssemblyInfo: true
+        updateAssemblyInfoFilename: ./src/Elastic.Apm.Mongo/Properties/AssemblyInfo.cs
+
+
+    - name: Pack
+      run: dotnet pack --configuration Release --include-symbols --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}
+      
+    - uses: actions/upload-artifact@v2
+      with:
+        name: packages
+        path: |
+          nupkgs/*.nupkg
+          nupkgs/*.snupkg
+          
+    # - script: |
+    #            COMMAND="$(git branch --contains tags/$BUILD_SOURCEBRANCHNAME)"
+    #            echo "##vso[task.setvariable variable=branch]${COMMAND}"
+    #          displayName: Identify Branch Name of tag  
+    #          condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/') 
+    #
+    #        # DotNetCoreCLI@2 cannot push nuget packages to external NuGet feeds with authentication using an encrypted Api Key
+    #        # https://github.com/Microsoft/azure-pipelines-tasks/issues/7160    
+    #        - task: DotNetCoreCLI@2
+    #          displayName: Publish NuGet package to NuGet
+    #          # 'git branch --contains' command returns list of branches. In addition, two space characters are in name.
+    #          condition: and(in(variables['branch'], 'master', '  master'), startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+    #          inputs:
+    #            command: custom
+    #            custom: nuget
+    #            arguments: >
+    #              push $(Build.ArtifactStagingDirectory)/ElasticApm.MongoDB.$(Build.SourceBranchName).nupkg
+    #              -s https://api.nuget.org/v3/index.json
+    #              -k $(NuGetApiKey)

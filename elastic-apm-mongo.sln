@@ -19,8 +19,6 @@ ProjectSection(SolutionItems) = preProject
 	GitVersion.yml = GitVersion.yml
 	LICENSE = LICENSE
 	README.md = README.md
-	azure-pipelines.linux.yml = azure-pipelines.linux.yml
-	azure-pipelines.windows.yml = azure-pipelines.windows.yml
 	global.json = global.json
 	NuGet.config = NuGet.config
 EndProjectSection
@@ -34,6 +32,13 @@ ProjectSection(SolutionItems) = preProject
 EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Elastic.Apm.Mongo.Examples.AspNetCore", "examples\Elastic.Apm.Mongo.Examples.AspNetCore\Elastic.Apm.Mongo.Examples.AspNetCore.csproj", "{812C9A58-8DE4-4B7F-8F7F-019D2BD79CFB}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".github", ".github", "{79F2A21B-2641-4CEC-8621-9EC8C61EBBFD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "workflows", "workflows", "{390CB3B6-3C20-4BB4-AF40-BD1A29E8F82B}"
+ProjectSection(SolutionItems) = preProject
+	.github\workflows\dotnetcore.yml = .github\workflows\dotnetcore.yml
+EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,5 +73,7 @@ Global
 		{D6CD7340-ECF2-4F15-80F1-4016DB1AC747} = {E5AE4FE2-7D60-4932-AC18-E6BC830DDC05}
 		{891959DB-7BB7-449C-B55E-15782B838384} = {E5AE4FE2-7D60-4932-AC18-E6BC830DDC05}
 		{812C9A58-8DE4-4B7F-8F7F-019D2BD79CFB} = {F242F21A-F38D-43C9-B8AF-85C8C6504403}
+		{79F2A21B-2641-4CEC-8621-9EC8C61EBBFD} = {C17F68B2-A613-4E5B-B448-BA0E9F2A631C}
+		{390CB3B6-3C20-4BB4-AF40-BD1A29E8F82B} = {79F2A21B-2641-4CEC-8621-9EC8C61EBBFD}
 	EndGlobalSection
 EndGlobal
