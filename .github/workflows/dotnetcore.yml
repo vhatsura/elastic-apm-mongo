@@ -73,17 +73,10 @@ jobs:
       id: gitversion # step id used as reference for output values
       uses: gittools/actions/gitversion/execute@v0.9.4
       with:
-        updateAssemblyInfo: true
-        updateAssemblyInfoFilename: ./src/Elastic.Apm.Mongo/obj/Release/netstandard2.0/Elastic.Apm.Mongo.AssemblyInfo.cs
-        
-    - name: Use GitVersion
-      uses: gittools/actions/gitversion/execute@v0.9.4
-      with:
-        updateAssemblyInfo: true
-        updateAssemblyInfoFilename: ./src/Elastic.Apm.Mongo/obj/Release/net461/Elastic.Apm.Mongo.AssemblyInfo.cs    
+        additionalArguments: /updateAssemblyInfo 
 
     - name: Pack
-      run: dotnet pack --configuration Release --no-build --include-symbols --output nupkgs 
+      run: dotnet pack --configuration Release --no-build --include-symbols --output nupkgs -p:PackageVersion=${{ steps.gitversion.outputs.nuGetVersionV2 }}
       
     - uses: actions/upload-artifact@v2
       with:
