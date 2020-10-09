@@ -26,18 +26,23 @@ jobs:
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
-
+   
     - name: Set MongoDB.Driver version to ${{ matrix.mongo-driver-version }}
-      run: sed -i -E "s/(<PackageReference Include=\"MongoDB.Driver\" Version=\").*(\" \/>)/\1${{ matrix.mongo-driver-version }}\2/" ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj     
+      run: sed -i -E "s/(<PackageReference Include=\"MongoDB.Driver\" Version=\").*(\" \/>)/\1${{ matrix.mongo-driver-version }}\2/" ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj
+      working-directory: "elastic-apm-mongo-${{ matrix.mongo-driver-version }}"
 
     - name: Print replaced content
-      run: cat ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj  
+      run: cat ./tests/Elastic.Apm.Mongo.IntegrationTests/Elastic.Apm.Mongo.IntegrationTests.csproj
+      working-directory: "elastic-apm-mongo-${{ matrix.mongo-driver-version }}"
 
     - name: Install dependencies
       run: dotnet restore
+      working-directory: "elastic-apm-mongo-${{ matrix.mongo-driver-version }}"
 
     - name: Build
       run: dotnet build --configuration Release --no-restore
+      working-directory: "elastic-apm-mongo-${{ matrix.mongo-driver-version }}"
 
     - name: Test
       run: dotnet test --configuration Release --no-build --verbosity normal /p:CollectCoverage=true /p:CoverletOutputFormat=opencover
+      working-directory: "elastic-apm-mongo-${{ matrix.mongo-driver-version }}"
