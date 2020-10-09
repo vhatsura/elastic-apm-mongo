@@ -19,8 +19,6 @@ ProjectSection(SolutionItems) = preProject
 	GitVersion.yml = GitVersion.yml
 	LICENSE = LICENSE
 	README.md = README.md
-	azure-pipelines.linux.yml = azure-pipelines.linux.yml
-	azure-pipelines.windows.yml = azure-pipelines.windows.yml
 	global.json = global.json
 	NuGet.config = NuGet.config
 EndProjectSection
