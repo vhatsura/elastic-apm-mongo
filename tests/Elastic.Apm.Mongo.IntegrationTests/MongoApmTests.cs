@@ -21,6 +21,8 @@ namespace Elastic.Apm.Mongo.IntegrationTests
     {
         public MongoApmTests(MongoFixture<MongoConfiguration, BsonDocument> fixture)
         {
+            if (fixture.Collection == null) throw new ArgumentNullException(nameof(fixture.Collection));
+
             _documents = fixture.Collection;
             _payloadSender = new MockPayloadSender();
 
@@ -34,6 +36,10 @@ namespace Elastic.Apm.Mongo.IntegrationTests
                 payloadSender: _payloadSender);
 
             var apmAgentType = typeof(IApmAgent).Assembly.GetType("Elastic.Apm.ApmAgent");
+
+            if (apmAgentType == null)
+                throw new InvalidOperationException("Cannot get `Elastic.Apm.ApmAgent` type with reflection");
+
             _agent = (IApmAgent) apmAgentType.GetConstructors(BindingFlags.NonPublic | BindingFlags.Instance).First()
                 .Invoke(new object[] {config});
             _agent.Subscribe(new MongoDiagnosticsSubscriber());
@@ -86,12 +92,13 @@ namespace Elastic.Apm.Mongo.IntegrationTests
             // Assert
             Assert.Single(_payloadSender.TransactionsQueue);
             Assert.True(_payloadSender.TransactionsQueue.TryPeek(out var capturedTransaction));
+            Assert.NotNull(capturedTransaction);
 
             var (address, port) = GetDestination(_documents.Database.Client);
 
             Assert.All(_payloadSender.SpansQueue, span =>
             {
-                Assert.Equal(capturedTransaction.Id, span.TransactionId);
+                Assert.Equal(capturedTransaction!.Id, span.TransactionId);
                 Assert.Equal(DatabaseName, span.Context.Db.Instance);
                 Assert.Equal(ApiConstants.TypeDb, span.Type);
 
@@ -100,7 +107,7 @@ namespace Elastic.Apm.Mongo.IntegrationTests
                 Assert.Equal(span.Context.Destination.Port, port);
             });
 
-            Assert.All(_payloadSender.SpansQueue, span => { Assert.Equal(capturedTransaction.Id, span.ParentId); });
+            Assert.All(_payloadSender.SpansQueue, span => { Assert.Equal(capturedTransaction!.Id, span.ParentId); });
         }
 
         [Fact]
@@ -127,12 +134,12 @@ namespace Elastic.Apm.Mongo.IntegrationTests
             // Assert
             Assert.Single(_payloadSender.TransactionsQueue);
             Assert.True(_payloadSender.TransactionsQueue.TryPeek(out var capturedTransaction));
-
+            Assert.NotNull(capturedTransaction);
 
             Assert.Single(_payloadSender.SpansQueue);
             Assert.True(_payloadSender.SpansQueue.TryPeek(out var capturedSpan));
 
-            Assert.Equal(capturedTransaction.Id, capturedSpan.TransactionId);
+            Assert.Equal(capturedTransaction!.Id, capturedSpan!.TransactionId);
             Assert.Equal(DatabaseName, capturedSpan.Context.Db.Instance);
             Assert.Equal(ApiConstants.TypeDb, capturedSpan.Type);
 
@@ -144,9 +151,10 @@ namespace Elastic.Apm.Mongo.IntegrationTests
 
             Assert.Single(_payloadSender.ErrorsQueue);
             Assert.True(_payloadSender.ErrorsQueue.TryPeek(out var capturedError));
+            Assert.NotNull(capturedError);
 
             Assert.Equal(capturedTransaction.Id,
-                capturedError.GetType().GetProperty("TransactionId")?.GetValue(capturedError)?.ToString());
+                capturedError!.GetType().GetProperty("TransactionId")?.GetValue(capturedError)?.ToString());
             Assert.Equal(capturedSpan.Id,
                 capturedError.GetType().GetProperty("ParentId")?.GetValue(capturedError)?.ToString());
         }

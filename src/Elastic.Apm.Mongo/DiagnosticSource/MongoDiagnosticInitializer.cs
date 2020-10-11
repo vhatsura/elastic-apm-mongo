@@ -8,7 +8,7 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
     {
         private readonly IApmAgent _apmAgent;
 
-        private IDisposable _sourceSubscription;
+        private IDisposable? _sourceSubscription;
 
         internal MongoDiagnosticInitializer(IApmAgent apmAgent)
         {

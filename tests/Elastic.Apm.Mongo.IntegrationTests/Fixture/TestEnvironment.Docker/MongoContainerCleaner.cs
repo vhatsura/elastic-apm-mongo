@@ -13,9 +13,9 @@ namespace Elastic.Apm.Mongo.IntegrationTests.Fixture.TestEnvironment.Docker
     [ExcludeFromCodeCoverage]
     public class MongoContainerCleaner : IContainerCleaner<MongoContainer>
     {
-        private readonly ILogger _logger;
+        private readonly ILogger? _logger;
 
-        public MongoContainerCleaner(ILogger logger = null)
+        public MongoContainerCleaner(ILogger? logger = null)
         {
             _logger = logger;
         }
