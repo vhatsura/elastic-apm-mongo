@@ -26,7 +26,7 @@ namespace Elastic.Apm.Mongo.IntegrationTests.Fixture
                 .Build();
         }
 
-        public IMongoCollection<TDocument> Collection { get; private set; }
+        public IMongoCollection<TDocument>? Collection { get; private set; }
 
         public async Task InitializeAsync()
         {
@@ -43,12 +43,17 @@ namespace Elastic.Apm.Mongo.IntegrationTests.Fixture
 
         public async Task DisposeAsync()
         {
-            await _configuration.DisposeAsync(Collection);
+            if (Collection != null)
+            {
+                await _configuration.DisposeAsync(Collection);
+            }
 
             await _environment.Down();
             await _environment.DisposeAsync();
         }
 
-        public void Dispose() {}
+        public void Dispose()
+        {
+        }
     }
 }
