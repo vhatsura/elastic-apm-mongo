@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         dotnet-version: [3.1.x]
-        mongo-driver-version: [ '2.3.0', '2.4.4', '2.5.1', '2.6.1', '2.7.3', '2.8.1', '2.9.3', '2.10.3' ]
+        mongo-driver-version: [ '2.4.4', '2.5.1', '2.6.1', '2.7.3', '2.8.1', '2.9.3', '2.10.4', '2.11.2' ]
 
     steps:
 
