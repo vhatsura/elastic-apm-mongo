@@ -14,7 +14,7 @@ jobs:
     strategy:
       matrix:
         dotnet-version: [3.1.x]
-        mongo-driver-version: [ '2.4.4', '2.5.1', '2.6.1', '2.7.3', '2.8.1', '2.9.3', '2.10.4', '2.11.2' ]
+        mongo-driver-version: [ '2.4.4', '2.5.1', '2.6.1', '2.7.3', '2.8.1', '2.9.3', '2.10.4', '2.11.4' ]
 
     steps:
 
@@ -47,7 +47,7 @@ jobs:
     strategy:
       matrix:
         dotnet-version: [ 3.1.x ]
-        apm-agent-version: [ '1.3.1', '1.4.0', '1.5.1', '1.6.1' ]
+        apm-agent-version: [ '1.7.0' ]
         
     steps:
 
@@ -96,7 +96,7 @@ jobs:
     - name: Install GitVersion
       uses: gittools/actions/gitversion/setup@v0.9.6
       with:
-        versionSpec: '5.3.x'
+        versionSpec: '5.5.x'
 
     - name: Use GitVersion
       id: gitversion # step id used as reference for output values

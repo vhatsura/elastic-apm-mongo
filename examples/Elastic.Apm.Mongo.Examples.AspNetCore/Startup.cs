@@ -37,7 +37,7 @@ namespace Elastic.Apm.Mongo.Examples.AspNetCore
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            app.UseElasticApm(Configuration, new AspNetCoreDiagnosticsSubscriber(), new MongoDiagnosticsSubscriber());
+            app.UseElasticApm(Configuration, new AspNetCoreDiagnosticSubscriber(), new MongoDiagnosticsSubscriber());
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
