@@ -18,6 +18,10 @@ namespace Elastic.Apm.Mongo
         public IDisposable Subscribe(IApmAgent components)
         {
             var retVal = new CompositeDisposable();
+
+            if (!components.ConfigurationReader.Enabled)
+                return retVal;
+
             var initializer = new MongoDiagnosticInitializer(components);
 
             retVal.Add(initializer);

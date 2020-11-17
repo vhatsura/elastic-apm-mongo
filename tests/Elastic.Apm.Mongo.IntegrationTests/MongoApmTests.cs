@@ -21,9 +21,7 @@ namespace Elastic.Apm.Mongo.IntegrationTests
     {
         public MongoApmTests(MongoFixture<MongoConfiguration, BsonDocument> fixture)
         {
-            if (fixture.Collection == null) throw new ArgumentNullException(nameof(fixture.Collection));
-
-            _documents = fixture.Collection;
+            _documents = fixture.Collection ?? throw new ArgumentNullException(nameof(fixture.Collection));
             _payloadSender = new MockPayloadSender();
 
             var configurationReaderMock = new Mock<IConfigurationReader>();
@@ -31,6 +29,10 @@ namespace Elastic.Apm.Mongo.IntegrationTests
                 .Returns(() => 1.0);
             configurationReaderMock.Setup(x => x.TransactionMaxSpans)
                 .Returns(() => 50);
+            configurationReaderMock.Setup(x => x.Enabled)
+                .Returns(() => true);
+            configurationReaderMock.Setup(x => x.Recording)
+                .Returns(() => true);
 
             var config = new AgentComponents(configurationReader: configurationReaderMock.Object,
                 payloadSender: _payloadSender);

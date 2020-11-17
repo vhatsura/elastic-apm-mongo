@@ -7,9 +7,9 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Elastic.Apm.AspNetCore" Version="1.6.1" />
+    <PackageReference Include="Elastic.Apm.AspNetCore" Version="1.7.0" />
     <!-- https://github.com/mongodb/mongo-csharp-driver/pull/372 -->
-    <PackageReference Include="MongoDB.Driver" Version="2.11.2" />
+    <PackageReference Include="MongoDB.Driver" Version="2.11.4" />
     <PackageReference Include="TestEnvironment.Docker" Version="1.3.7" />
     <PackageReference Include="TestEnvironment.Docker.Containers.Mongo" Version="1.2.0" />
   </ItemGroup>

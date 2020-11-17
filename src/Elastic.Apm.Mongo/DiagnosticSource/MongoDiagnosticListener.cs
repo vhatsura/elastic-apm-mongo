@@ -9,7 +9,7 @@ using MongoDB.Driver.Core.Events;
 
 namespace Elastic.Apm.Mongo.DiagnosticSource
 {
-    internal class MongoDiagnosticListener : IObserver<KeyValuePair<string, object>>
+    internal class MongoDiagnosticListener : IObserver<KeyValuePair<string, object?>>
     {
         private readonly IApmAgent _apmAgent;
         private readonly IApmLogger _logger;
@@ -30,7 +30,7 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
             // "{Scope}":"MicrosoftExtensionsConfig","ServiceName":"ServiceName","SourceContext":"Elastic.Apm"}
         }
 
-        public void OnNext(KeyValuePair<string, object> value)
+        public void OnNext(KeyValuePair<string, object?> value)
         {
             switch (value.Key)
             {
@@ -97,7 +97,7 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
             catch (Exception ex)
             {
                 //ignore
-                _logger?.Log(LogLevel.Error, "Exception was thrown while handling 'command started event'", ex, null);
+                _logger.Log(LogLevel.Error, "Exception was thrown while handling 'command started event'", ex, null);
             }
         }
 
@@ -112,7 +112,7 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
             catch (Exception ex)
             {
                 // ignore
-                _logger?.Log(LogLevel.Error, "Exception was thrown while handling 'command succeeded event'", ex, null);
+                _logger.Log(LogLevel.Error, "Exception was thrown while handling 'command succeeded event'", ex, null);
             }
         }
 
@@ -128,7 +128,7 @@ namespace Elastic.Apm.Mongo.DiagnosticSource
             catch (Exception ex)
             {
                 // ignore
-                _logger?.Log(LogLevel.Error, "Exception was thrown while handling 'command failed event'", ex, null);
+                _logger.Log(LogLevel.Error, "Exception was thrown while handling 'command failed event'", ex, null);
             }
         }
     }
