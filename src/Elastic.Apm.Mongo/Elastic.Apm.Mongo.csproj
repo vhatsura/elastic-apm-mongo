@@ -26,7 +26,7 @@
     <PackageReference Include="Elastic.Apm" Version="1.7.0" />
     <PackageReference Condition=" '$(TargetFramework)' == 'net461' " Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
-    <PackageReference Include="MongoDB.Driver.Core" Version="2.4.4" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.11.4" />
   </ItemGroup>
 
 </Project>
