@@ -1,3 +1,5 @@
+**Superseeded by [Elastic.Apm.MongoDb](https://github.com/elastic/apm-agent-dotnet/tree/master/src/Elastic.Apm.MongoDb)**
+
 # MongoDB auto instrumentation for Elastic Apm
 
 [![Build Status](https://dev.azure.com/vadimhatsura/elastic-apm-mongo/_apis/build/status/vhatsura.elastic-apm-mongo?branchName=master)](https://dev.azure.com/vadimhatsura/elastic-apm-mongo/_build/latest?definitionId=4&branchName=master)
